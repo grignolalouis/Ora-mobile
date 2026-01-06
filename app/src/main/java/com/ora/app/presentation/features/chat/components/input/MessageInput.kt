@@ -1,31 +1,38 @@
 package com.ora.app.presentation.features.chat.components.input
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Stop
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.theme.OraColors
 
 @Composable
 fun MessageInput(
@@ -37,74 +44,116 @@ fun MessageInput(
     isStreaming: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val isActive = isStreaming || isSending
+    val canSend = value.isNotBlank() && !isSending
+
+    val borderColor by animateColorAsState(
+        targetValue = if (value.isNotEmpty()) {
+            MaterialTheme.colorScheme.outline
+        } else {
+            MaterialTheme.colorScheme.outlineVariant
+        },
+        animationSpec = tween(150),
+        label = "inputBorderColor"
+    )
+
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        shadowElevation = 8.dp,
-        color = MaterialTheme.colorScheme.surface
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = Dimensions.paddingScreen,
+                vertical = Dimensions.spacing12
+            ),
+        color = MaterialTheme.colorScheme.background
     ) {
         Row(
-            modifier = Modifier.padding(
-                horizontal = Dimensions.spacingMd,
-                vertical = Dimensions.spacingSm
-            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Dimensions.radiusXl))
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .border(
+                    width = 1.dp,
+                    color = borderColor,
+                    shape = RoundedCornerShape(Dimensions.radiusXl)
+                )
+                .padding(
+                    start = Dimensions.spacingMd,
+                    end = Dimensions.spacing8,
+                    top = Dimensions.spacing8,
+                    bottom = Dimensions.spacing8
+                ),
             verticalAlignment = Alignment.Bottom
         ) {
-            TextField(
+            BasicTextField(
                 value = value,
                 onValueChange = onValueChange,
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(
-                        min = Dimensions.inputMinHeight,
-                        max = Dimensions.inputMaxHeight
-                    ),
-                placeholder = { Text("Message...") },
+                    .heightIn(min = 36.dp, max = Dimensions.inputMaxHeight)
+                    .padding(vertical = Dimensions.spacing8),
                 enabled = !isSending,
-                maxLines = 6,
-                shape = RoundedCornerShape(Dimensions.radiusXl),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
+                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface
                 ),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                keyboardActions = KeyboardActions(
-                    onSend = { if (value.isNotBlank() && !isSending && !isStreaming) onSend() }
-                )
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                maxLines = 8,
+                decorationBox = { innerTextField ->
+                    Box {
+                        if (value.isEmpty()) {
+                            Text(
+                                text = "Message...",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        innerTextField()
+                    }
+                }
             )
 
-            // LG: Send/Stop button
-            IconButton(
-                onClick = {
-                    when {
-                        isStreaming -> onCancel()
-                        value.isNotBlank() && !isSending -> onSend()
-                    }
-                },
-                enabled = isStreaming || (value.isNotBlank() && !isSending)
-            ) {
-                when {
-                    isSending -> {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            strokeWidth = 2.dp
+            // Send / Stop button
+            AnimatedContent(
+                targetState = isActive,
+                label = "sendButton"
+            ) { streaming ->
+                if (streaming) {
+                    // Stop button
+                    IconButton(
+                        onClick = onCancel,
+                        modifier = Modifier.size(36.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.error,
+                            contentColor = OraColors.White
                         )
-                    }
-                    isStreaming -> {
+                    ) {
                         Icon(
-                            imageVector = Icons.Default.Stop,
+                            imageVector = Icons.Filled.Stop,
                             contentDescription = "Stop",
-                            tint = MaterialTheme.colorScheme.error
+                            modifier = Modifier.size(Dimensions.iconSizeSmall)
                         )
                     }
-                    else -> {
+                } else {
+                    // Send button
+                    IconButton(
+                        onClick = { if (canSend) onSend() },
+                        modifier = Modifier
+                            .size(36.dp)
+                            .clip(CircleShape)
+                            .background(
+                                if (canSend) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.surfaceContainerHigh
+                                }
+                            ),
+                        enabled = canSend
+                    ) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            imageVector = Icons.Filled.ArrowUpward,
                             contentDescription = "Send",
-                            tint = if (value.isNotBlank()) {
-                                MaterialTheme.colorScheme.primary
+                            modifier = Modifier.size(Dimensions.iconSizeSmall),
+                            tint = if (canSend) {
+                                MaterialTheme.colorScheme.onPrimary
                             } else {
                                 MaterialTheme.colorScheme.onSurfaceVariant
                             }

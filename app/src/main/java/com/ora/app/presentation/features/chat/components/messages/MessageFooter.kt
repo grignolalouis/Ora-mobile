@@ -18,7 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ora.app.domain.model.FeedbackState
 import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.Success
+import com.ora.app.presentation.theme.OraColors
 
 @Composable
 fun MessageFooter(
@@ -43,7 +43,7 @@ fun MessageFooter(
                 contentDescription = "Like",
                 modifier = Modifier.size(Dimensions.iconSizeSmall),
                 tint = if (feedbackState == FeedbackState.POSITIVE) {
-                    Success
+                    OraColors.Success
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 }

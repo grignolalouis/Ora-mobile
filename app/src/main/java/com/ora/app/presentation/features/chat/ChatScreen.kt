@@ -4,25 +4,22 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Snackbar
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.material3.rememberDrawerState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.ora.app.domain.model.FeedbackState
@@ -33,7 +30,6 @@ import com.ora.app.presentation.features.chat.components.WelcomeContent
 import com.ora.app.presentation.features.chat.components.drawer.SessionDrawer
 import com.ora.app.presentation.features.chat.components.input.MessageInput
 import com.ora.app.presentation.features.chat.components.messages.MessagesList
-import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -48,21 +44,20 @@ fun ChatScreen(
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val listState = rememberLazyListState()
-    val snackbarHostState = remember { SnackbarHostState() }
 
-    // LG: Init
+    // Init
     LaunchedEffect(Unit) {
         viewModel.dispatch(ChatIntent.LoadAgents)
     }
 
-    // LG: Select agent if provided
+    // Select agent if provided
     LaunchedEffect(initialAgentType, state.agents) {
         if (initialAgentType != null && state.agents.isNotEmpty()) {
             viewModel.dispatch(ChatIntent.SelectAgent(initialAgentType))
         }
     }
 
-    // LG: Sync drawer state
+    // Sync drawer state
     LaunchedEffect(state.isDrawerOpen) {
         if (state.isDrawerOpen) {
             drawerState.open()
@@ -77,7 +72,7 @@ fun ChatScreen(
         }
     }
 
-    // LG: Handle effects
+    // Handle effects
     LaunchedEffect(Unit) {
         viewModel.effect.collect { effect ->
             when (effect) {
@@ -117,8 +112,15 @@ fun ChatScreen(
         },
         gesturesEnabled = true
     ) {
-        Scaffold(
-            topBar = {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .systemBarsPadding()
+                .imePadding()
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                // Top bar
                 ChatTopBar(
                     title = state.activeSession?.title ?: "Ora",
                     agents = state.agents,
@@ -126,27 +128,14 @@ fun ChatScreen(
                     onAgentSelected = { viewModel.dispatch(ChatIntent.SelectAgent(it)) },
                     onMenuClick = { viewModel.dispatch(ChatIntent.ToggleDrawer) }
                 )
-            },
-            snackbarHost = {
-                SnackbarHost(snackbarHostState) { data ->
-                    Snackbar(snackbarData = data)
-                }
-            }
-        ) { padding ->
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .imePadding()
-            ) {
-                // LG: Main content
+
+                // Main content
                 Box(modifier = Modifier.weight(1f)) {
                     when {
                         state.isLoadingAgents -> {
                             LoadingIndicator(fullScreen = true)
                         }
                         state.isLoadingHistory -> {
-                            // LG: Loading indicator pendant chargement historique
                             LoadingIndicator(fullScreen = true)
                         }
                         state.error != null && state.interactions.isEmpty() -> {
@@ -180,7 +169,7 @@ fun ChatScreen(
                     }
                 }
 
-                // LG: Input
+                // Input
                 MessageInput(
                     value = state.inputText,
                     onValueChange = { viewModel.dispatch(ChatIntent.UpdateInput(it)) },

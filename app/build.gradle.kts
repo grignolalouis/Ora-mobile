@@ -103,6 +103,11 @@ dependencies {
     // OkHttp SSE
     implementation(libs.okhttp.sse)
 
+    // Markdown (Markwon)
+    implementation(libs.bundles.markwon) {
+        exclude(group = "org.jetbrains", module = "annotations-java5")
+    }
+
     // Testing
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

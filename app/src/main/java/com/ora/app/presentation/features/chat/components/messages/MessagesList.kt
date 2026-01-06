@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.ora.app.domain.model.FeedbackState
 import com.ora.app.domain.model.Interaction
 import com.ora.app.presentation.theme.Dimensions
 
@@ -24,10 +23,13 @@ fun MessagesList(
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         state = listState,
-        contentPadding = PaddingValues(Dimensions.paddingScreen),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.spacingMd)
+        contentPadding = PaddingValues(vertical = Dimensions.spacingMd),
+        verticalArrangement = Arrangement.spacedBy(Dimensions.spacing24)
     ) {
-        itemsIndexed(interactions, key = { index, _ -> index }) { index, interaction ->
+        itemsIndexed(
+            items = interactions,
+            key = { _, interaction -> interaction.id }
+        ) { index, interaction ->
             MessagePair(
                 interaction = interaction,
                 onThumbsUp = { onThumbsUp(index) },

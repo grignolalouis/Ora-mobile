@@ -36,6 +36,9 @@ coil = "3.0.4"
 # Security Crypto (for encrypted preferences)
 securityCrypto = "1.1.0-alpha06"
 
+# Markdown (Markwon)
+markwon = "4.6.2"
+
 # Testing
 mockk = "1.13.10"
 truth = "1.4.2"
@@ -109,6 +112,16 @@ androidx-security-crypto = { group = "androidx.security", name = "security-crypt
 # OkHttp SSE
 okhttp-sse = { group = "com.squareup.okhttp3", name = "okhttp-sse", version.ref = "okhttp" }
 
+# Markwon (Markdown rendering)
+markwon-core = { group = "io.noties.markwon", name = "core", version.ref = "markwon" }
+markwon-strikethrough = { group = "io.noties.markwon", name = "ext-strikethrough", version.ref = "markwon" }
+markwon-tables = { group = "io.noties.markwon", name = "ext-tables", version.ref = "markwon" }
+markwon-html = { group = "io.noties.markwon", name = "html", version.ref = "markwon" }
+markwon-coil = { group = "io.noties.markwon", name = "image-coil", version.ref = "markwon" }
+markwon-linkify = { group = "io.noties.markwon", name = "linkify", version.ref = "markwon" }
+markwon-syntax-highlight = { group = "io.noties.markwon", name = "syntax-highlight", version.ref = "markwon" }
+prism4j-bundler = { group = "io.noties", name = "prism4j-bundler", version = "2.0.0" }
+
 [bundles]
 ktor = [
     "ktor-client-core",
@@ -135,6 +148,13 @@ coil = [
 coroutines = [
     "kotlinx-coroutines-core",
     "kotlinx-coroutines-android"
+]
+markwon = [
+    "markwon-core",
+    "markwon-strikethrough",
+    "markwon-tables",
+    "markwon-linkify",
+    "markwon-syntax-highlight"
 ]
 
 [plugins]

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.ora.app.domain.model.Agent
 import com.ora.app.presentation.theme.Dimensions
@@ -27,15 +28,18 @@ fun WelcomeContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        // Main greeting
         Text(
-            text = agent?.greeting ?: "Hello!",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.primary,
+            text = agent?.greeting ?: "Hello",
+            style = MaterialTheme.typography.displaySmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(Dimensions.spacingMd))
+        Spacer(modifier = Modifier.height(Dimensions.spacing12))
 
+        // Subtitle
         Text(
             text = agent?.description ?: "How can I help you today?",
             style = MaterialTheme.typography.bodyLarge,
@@ -43,22 +47,17 @@ fun WelcomeContent(
             textAlign = TextAlign.Center
         )
 
-        if (agent != null) {
-            Spacer(modifier = Modifier.height(Dimensions.spacingXl))
+        // Capabilities (subtle, minimal)
+        if (agent != null && agent.capabilities.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(Dimensions.spacing48))
 
-            Text(
-                text = "Capabilities:",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(modifier = Modifier.height(Dimensions.spacingSm))
-
-            agent.capabilities.forEach { capability ->
+            agent.capabilities.take(3).forEach { capability ->
                 Text(
-                    text = "• $capability",
+                    text = capability,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(vertical = Dimensions.spacing4)
                 )
             }
         }

@@ -6,11 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ora.app.domain.model.FeedbackState
 import com.ora.app.domain.model.InteractionStatus
 import com.ora.app.domain.model.ToolCall
+import com.ora.app.presentation.designsystem.components.MarkdownText
 import com.ora.app.presentation.features.chat.components.tools.ToolCallCard
 import com.ora.app.presentation.theme.Dimensions
 
@@ -25,37 +27,41 @@ fun AssistantMessage(
     modifier: Modifier = Modifier,
     toolCalls: List<ToolCall> = emptyList()
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
-        // LG: Tool calls si présents
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimensions.paddingScreen)
+    ) {
+        // Tool calls if present
         if (toolCalls.isNotEmpty()) {
-            Column(verticalArrangement = Arrangement.spacedBy(Dimensions.spacingSm)) {
+            Column(verticalArrangement = Arrangement.spacedBy(Dimensions.spacing8)) {
                 toolCalls.forEach { toolCall ->
                     ToolCallCard(toolCall = toolCall)
                 }
             }
-            Spacer(modifier = Modifier.height(Dimensions.spacingMd))
+            Spacer(modifier = Modifier.height(Dimensions.spacing12))
         }
 
-        // LG: Thinking indicator quand en attente
+        // Thinking indicator when waiting
         if (status == InteractionStatus.THINKING || status == InteractionStatus.PENDING) {
             ThinkingIndicator()
         } else if (content.isNotEmpty()) {
-            // LG: Contenu Markdown
-            Row {
-                MarkdownContent(
-                    content = content,
+            // Markdown content with streaming cursor
+            Row(modifier = Modifier.fillMaxWidth()) {
+                MarkdownText(
+                    markdown = content,
                     modifier = Modifier.weight(1f)
                 )
 
-                // LG: Streaming cursor
+                // Streaming cursor
                 if (status == InteractionStatus.STREAMING) {
                     StreamingCursor()
                 }
             }
 
-            // LG: Footer seulement pour les messages complets
+            // Footer only for completed messages
             if (status == InteractionStatus.COMPLETED) {
-                Spacer(modifier = Modifier.height(Dimensions.spacingMd))
+                Spacer(modifier = Modifier.height(Dimensions.spacing12))
                 MessageFooter(
                     feedbackState = feedbackState,
                     onThumbsUp = onThumbsUp,

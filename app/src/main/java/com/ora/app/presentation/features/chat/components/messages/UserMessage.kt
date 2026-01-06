@@ -11,8 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.UserBubble
-import com.ora.app.presentation.theme.UserBubbleText
+import com.ora.app.presentation.theme.OraTheme
 
 @Composable
 fun UserMessage(
@@ -20,24 +19,29 @@ fun UserMessage(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = Dimensions.paddingScreen),
         horizontalArrangement = Arrangement.End
     ) {
         Surface(
-            modifier = Modifier.fillMaxWidth(Dimensions.messageBubbleMaxWidth),
+            modifier = Modifier.fillMaxWidth(Dimensions.messageMaxWidth),
             shape = RoundedCornerShape(
                 topStart = Dimensions.radiusLg,
                 topEnd = Dimensions.radiusLg,
                 bottomStart = Dimensions.radiusLg,
                 bottomEnd = Dimensions.radiusSm
             ),
-            color = UserBubble
+            color = OraTheme.colors.userBubble
         ) {
             Text(
                 text = content,
                 style = MaterialTheme.typography.bodyLarge,
-                color = UserBubbleText,
-                modifier = Modifier.padding(Dimensions.paddingCard)
+                color = OraTheme.colors.userBubbleText,
+                modifier = Modifier.padding(
+                    horizontal = Dimensions.spacingMd,
+                    vertical = Dimensions.spacing12
+                )
             )
         }
     }

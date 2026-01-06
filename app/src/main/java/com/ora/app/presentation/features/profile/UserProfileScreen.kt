@@ -2,6 +2,7 @@ package com.ora.app.presentation.features.profile
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,26 +13,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.LightMode
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -40,21 +36,25 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ora.app.core.storage.ThemeMode
 import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.domain.model.User
 import com.ora.app.presentation.components.common.LoadingIndicator
+import com.ora.app.presentation.designsystem.components.OraButton
+import com.ora.app.presentation.designsystem.components.OraButtonStyle
+import com.ora.app.presentation.designsystem.components.OraDivider
 import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.theme.OraColors
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserProfileScreen(
     onNavigateBack: () -> Unit,
@@ -79,7 +79,7 @@ fun UserProfileScreen(
         }
     }
 
-    // LG: Delete confirmation dialog
+    // Delete confirmation dialog
     if (state.showDeleteConfirmation) {
         DeleteAccountDialog(
             onConfirm = { viewModel.dispatch(UserProfileIntent.ConfirmDeleteAccount) },
@@ -87,23 +87,17 @@ fun UserProfileScreen(
         )
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Profile") },
-                navigationIcon = {
-                    IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-        ) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .systemBarsPadding()
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            // Top bar
+            ProfileTopBar(onBackClick = onNavigateBack)
+
+            // Content
             when {
                 state.isLoading || state.isDeleting -> {
                     LoadingIndicator(fullScreen = true)
@@ -118,12 +112,15 @@ fun UserProfileScreen(
                     ) {
                         Text(
                             text = state.error!!,
+                            style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.error
                         )
                         Spacer(modifier = Modifier.height(Dimensions.spacingMd))
-                        Button(onClick = { viewModel.dispatch(UserProfileIntent.LoadUser) }) {
-                            Text("Retry")
-                        }
+                        OraButton(
+                            text = "Retry",
+                            onClick = { viewModel.dispatch(UserProfileIntent.LoadUser) },
+                            style = OraButtonStyle.Secondary
+                        )
                     }
                 }
                 state.user != null -> {
@@ -138,7 +135,35 @@ fun UserProfileScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProfileTopBar(onBackClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .padding(horizontal = Dimensions.spacing8)
+    ) {
+        IconButton(
+            onClick = onBackClick,
+            modifier = Modifier.align(Alignment.CenterStart)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+        Text(
+            text = "Profile",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
 @Composable
 private fun UserProfileContent(
     user: User,
@@ -151,15 +176,17 @@ private fun UserProfileContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(Dimensions.paddingScreen),
+            .padding(horizontal = Dimensions.paddingScreen),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // LG: Avatar
+        Spacer(modifier = Modifier.height(Dimensions.spacing24))
+
+        // Avatar
         Box(
             modifier = Modifier
-                .size(120.dp)
+                .size(100.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
+                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
             contentAlignment = Alignment.Center
         ) {
             if (user.profilePictureUrl != null) {
@@ -171,128 +198,200 @@ private fun UserProfileContent(
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Default.Person,
+                    imageVector = Icons.Outlined.Person,
                     contentDescription = null,
-                    modifier = Modifier.size(60.dp),
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(Dimensions.spacingLg))
-
-        // LG: Name
-        Text(
-            text = user.name,
-            style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(Dimensions.spacingSm))
-
-        // LG: Email
-        Text(
-            text = user.email,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(modifier = Modifier.height(Dimensions.spacingXl))
-
-        // LG: Theme selector
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-        ) {
-            Column(
-                modifier = Modifier.padding(Dimensions.spacingMd)
-            ) {
-                Text(
-                    text = "Theme",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(Dimensions.spacingSm))
-                SingleChoiceSegmentedButtonRow(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    ThemeMode.entries.forEachIndexed { index, mode ->
-                        SegmentedButton(
-                            shape = SegmentedButtonDefaults.itemShape(
-                                index = index,
-                                count = ThemeMode.entries.size
-                            ),
-                            onClick = {
-                                scope.launch { themePreferences.setThemeMode(mode) }
-                            },
-                            selected = themeMode == mode
-                        ) {
-                            Text(
-                                text = when (mode) {
-                                    ThemeMode.SYSTEM -> "System"
-                                    ThemeMode.LIGHT -> "Light"
-                                    ThemeMode.DARK -> "Dark"
-                                }
-                            )
-                        }
-                    }
-                }
             }
         }
 
         Spacer(modifier = Modifier.height(Dimensions.spacingMd))
 
-        // LG: Info card
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant
+        // Name
+        Text(
+            text = user.name,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+
+        Spacer(modifier = Modifier.height(Dimensions.spacing4))
+
+        // Email
+        Text(
+            text = user.email,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.height(Dimensions.spacing32))
+
+        // Settings section
+        SettingsSection(title = "Appearance") {
+            ThemeSelector(
+                selectedMode = themeMode,
+                onModeSelected = { mode ->
+                    scope.launch { themePreferences.setThemeMode(mode) }
+                }
             )
-        ) {
-            Column(
-                modifier = Modifier.padding(Dimensions.spacingMd)
-            ) {
-                InfoRow(label = "Role", value = user.role.replaceFirstChar { it.uppercase() })
-                Spacer(modifier = Modifier.height(Dimensions.spacingSm))
-                InfoRow(
-                    label = "Email verified",
-                    value = if (user.verifiedEmail) "Yes" else "No"
-                )
-            }
+        }
+
+        Spacer(modifier = Modifier.height(Dimensions.spacingMd))
+
+        // Account info section
+        SettingsSection(title = "Account") {
+            SettingsRow(
+                label = "Role",
+                value = user.role.replaceFirstChar { it.uppercase() }
+            )
+            OraDivider()
+            SettingsRow(
+                label = "Email verified",
+                value = if (user.verifiedEmail) "Yes" else "No"
+            )
         }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // LG: Delete account button
-        Button(
+        // Delete account button
+        OraButton(
+            text = "Delete Account",
             onClick = onDeleteAccount,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.error
+            style = OraButtonStyle.Ghost,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(Dimensions.spacing24))
+    }
+}
+
+@Composable
+private fun SettingsSection(
+    title: String,
+    content: @Composable () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(
+                start = Dimensions.spacing4,
+                bottom = Dimensions.spacing8
             )
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(Dimensions.radiusMd))
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
         ) {
-            Text("Delete Account")
+            Column(
+                modifier = Modifier.padding(Dimensions.spacingMd)
+            ) {
+                content()
+            }
         }
     }
 }
 
 @Composable
-private fun InfoRow(label: String, value: String) {
+private fun ThemeSelector(
+    selectedMode: ThemeMode,
+    onModeSelected: (ThemeMode) -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.spacedBy(Dimensions.spacing8)
+    ) {
+        ThemeOption(
+            icon = Icons.Outlined.PhoneAndroid,
+            label = "System",
+            isSelected = selectedMode == ThemeMode.SYSTEM,
+            onClick = { onModeSelected(ThemeMode.SYSTEM) },
+            modifier = Modifier.weight(1f)
+        )
+        ThemeOption(
+            icon = Icons.Outlined.LightMode,
+            label = "Light",
+            isSelected = selectedMode == ThemeMode.LIGHT,
+            onClick = { onModeSelected(ThemeMode.LIGHT) },
+            modifier = Modifier.weight(1f)
+        )
+        ThemeOption(
+            icon = Icons.Outlined.DarkMode,
+            label = "Dark",
+            isSelected = selectedMode == ThemeMode.DARK,
+            onClick = { onModeSelected(ThemeMode.DARK) },
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun ThemeOption(
+    icon: ImageVector,
+    label: String,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(Dimensions.radiusSm))
+            .background(
+                if (isSelected) {
+                    MaterialTheme.colorScheme.surfaceContainerHigh
+                } else {
+                    MaterialTheme.colorScheme.surfaceContainerLow
+                }
+            )
+            .clickable(onClick = onClick)
+            .padding(vertical = Dimensions.spacing12),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = label,
+            modifier = Modifier.size(Dimensions.iconSizeMd),
+            tint = if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            }
+        )
+        Spacer(modifier = Modifier.height(Dimensions.spacing4))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.labelSmall,
+            color = if (isSelected) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.onSurfaceVariant
+            }
+        )
+    }
+}
+
+@Composable
+private fun SettingsRow(label: String, value: String) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = Dimensions.spacing8),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Medium
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }
@@ -304,24 +403,34 @@ private fun DeleteAccountDialog(
 ) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Delete Account") },
+        title = {
+            Text(
+                text = "Delete Account",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.SemiBold
+            )
+        },
         text = {
-            Text("Are you sure you want to delete your account? This action cannot be undone.")
+            Text(
+                text = "Are you sure you want to delete your account? This action cannot be undone.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         },
         confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error
+            TextButton(onClick = onConfirm) {
+                Text(
+                    text = "Delete",
+                    color = OraColors.Error
                 )
-            ) {
-                Text("Delete")
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
                 Text("Cancel")
             }
-        }
+        },
+        containerColor = MaterialTheme.colorScheme.surface,
+        shape = RoundedCornerShape(Dimensions.radiusLg)
     )
 }
