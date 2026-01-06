@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class StreamResponseUseCase(private val sessionRepository: SessionRepository) {
 
-    operator fun invoke(streamId: String): Flow<StreamEvent> {
-        return sessionRepository.streamResponse(streamId)
+    operator fun invoke(agentType: String, streamId: String): Flow<StreamEvent> {
+        return sessionRepository.streamResponse(agentType, streamId)
     }
 }

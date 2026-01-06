@@ -12,6 +12,9 @@ composeBom = "2024.09.00"
 # Ktor
 ktor = "3.0.2"
 
+# OkHttp
+okhttp = "4.12.0"
+
 # Koin
 koin = "4.0.0"
 
@@ -102,6 +105,9 @@ coil-network-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", 
 
 # Security
 androidx-security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
+
+# OkHttp SSE
+okhttp-sse = { group = "com.squareup.okhttp3", name = "okhttp-sse", version.ref = "okhttp" }
 
 [bundles]
 ktor = [

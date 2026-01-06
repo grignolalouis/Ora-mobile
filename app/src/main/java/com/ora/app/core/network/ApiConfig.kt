@@ -6,7 +6,7 @@ object ApiConfig {
     val BASE_URL: String = BuildConfig.API_BASE_URL
     const val API_VERSION = "api/v1"
 
-    val fullBaseUrl: String get() = "$BASE_URL/$API_VERSION"
+    val fullBaseUrl: String get() = BASE_URL
 
     // LG: Timeouts in ms
     const val CONNECT_TIMEOUT = 30_000L

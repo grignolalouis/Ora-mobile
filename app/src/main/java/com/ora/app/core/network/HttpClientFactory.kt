@@ -1,6 +1,8 @@
 package com.ora.app.core.network
 
 import android.util.Log
+import android.webkit.CookieManager
+import com.ora.app.core.storage.TokenManager
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
@@ -13,10 +15,24 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import okhttp3.Cookie
+import okhttp3.CookieJar
+import okhttp3.HttpUrl
 
 object HttpClientFactory {
 
-    fun create(tokenProvider: () -> String?): HttpClient = HttpClient(OkHttp) {
+    private val cookieJar = AndroidCookieJar()
+
+    fun create(tokenManager: TokenManager): HttpClient = HttpClient(OkHttp) {
+        engine {
+            config {
+                // LG: CookieJar pour persister le refresh token (HTTP-only cookie)
+                cookieJar(cookieJar)
+                // LG: Intercepteur pour refresh automatique sur 401
+                addInterceptor(AuthInterceptor(tokenManager, cookieJar))
+            }
+        }
+
         install(ContentNegotiation) {
             json(Json {
                 ignoreUnknownKeys = true
@@ -41,26 +57,30 @@ object HttpClientFactory {
         }
 
         defaultRequest {
-            url(ApiConfig.fullBaseUrl)
+            url(ApiConfig.BASE_URL + "/" + ApiConfig.API_VERSION + "/")
             contentType(ContentType.Application.Json)
-            tokenProvider()?.let { token ->
-                headers.append("Authorization", "Bearer $token")
-            }
+        }
+    }
+}
+
+// LG: CookieJar qui utilise Android CookieManager pour persister les cookies
+class AndroidCookieJar : CookieJar {
+    private val cookieManager = CookieManager.getInstance()
+
+    init {
+        cookieManager.setAcceptCookie(true)
+    }
+
+    override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
+        cookies.forEach { cookie ->
+            cookieManager.setCookie(url.toString(), cookie.toString())
         }
     }
 
-    // LG: SSE client sans timeout court
-    fun createForSSE(tokenProvider: () -> String?): HttpClient = HttpClient(OkHttp) {
-        install(HttpTimeout) {
-            requestTimeoutMillis = ApiConfig.SSE_TIMEOUT
-            socketTimeoutMillis = ApiConfig.SSE_TIMEOUT
-        }
-
-        defaultRequest {
-            url(ApiConfig.fullBaseUrl)
-            tokenProvider()?.let { token ->
-                headers.append("Authorization", "Bearer $token")
-            }
+    override fun loadForRequest(url: HttpUrl): List<Cookie> {
+        val cookieHeader = cookieManager.getCookie(url.toString()) ?: return emptyList()
+        return cookieHeader.split(";").mapNotNull { cookieStr ->
+            Cookie.parse(url, cookieStr.trim())
         }
     }
 }

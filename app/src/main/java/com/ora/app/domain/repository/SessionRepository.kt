@@ -13,5 +13,5 @@ interface SessionRepository {
     suspend fun deleteSession(agentType: String, sessionId: String): Result<Unit>
     suspend fun renameSession(agentType: String, sessionId: String, title: String): Result<Session>
     suspend fun sendMessage(agentType: String, sessionId: String, message: String): Result<String>
-    fun streamResponse(streamId: String): Flow<StreamEvent>
+    fun streamResponse(agentType: String, streamId: String): Flow<StreamEvent>
 }
