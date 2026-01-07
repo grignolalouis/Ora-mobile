@@ -25,6 +25,7 @@ import androidx.compose.material.icons.outlined.PhoneAndroid
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -48,7 +49,6 @@ import com.ora.app.domain.model.User
 import com.ora.app.presentation.components.common.LoadingIndicator
 import com.ora.app.presentation.designsystem.components.OraButton
 import com.ora.app.presentation.designsystem.components.OraButtonStyle
-import com.ora.app.presentation.designsystem.components.OraDivider
 import com.ora.app.presentation.theme.Dimensions
 import com.ora.app.presentation.theme.OraColors
 import kotlinx.coroutines.launch
@@ -245,7 +245,7 @@ private fun UserProfileContent(
                 label = "Role",
                 value = user.role.replaceFirstChar { it.uppercase() }
             )
-            OraDivider()
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
             SettingsRow(
                 label = "Email verified",
                 value = if (user.verifiedEmail) "Yes" else "No"

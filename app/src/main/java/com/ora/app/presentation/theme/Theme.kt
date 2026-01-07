@@ -16,19 +16,19 @@ import androidx.core.view.WindowCompat
 import com.ora.app.core.storage.ThemeMode
 
 // ============================================================================
-// ORA Design System - Theme
-// Minimalist, clean theme inspired by Apple/Perplexity
+// ORA Design System - Claude-inspired Theme
+// Warm, minimal, professional
 // ============================================================================
 
 private val LightColorScheme = lightColorScheme(
-    primary = OraColors.Gray900,
+    primary = OraColors.Accent,
     onPrimary = OraColors.White,
-    primaryContainer = OraColors.Gray100,
-    onPrimaryContainer = OraColors.Gray900,
-    secondary = OraColors.Gray700,
+    primaryContainer = OraColors.AccentLight,
+    onPrimaryContainer = OraColors.Accent,
+    secondary = OraColors.LightTextSecondary,
     onSecondary = OraColors.White,
-    secondaryContainer = OraColors.Gray100,
-    onSecondaryContainer = OraColors.Gray900,
+    secondaryContainer = OraColors.LightSurfaceContainer,
+    onSecondaryContainer = OraColors.LightTextPrimary,
     tertiary = OraColors.Accent,
     onTertiary = OraColors.White,
     background = LightBackground,
@@ -38,40 +38,40 @@ private val LightColorScheme = lightColorScheme(
     surfaceVariant = LightSurfaceVariant,
     onSurfaceVariant = LightOnSurfaceVariant,
     surfaceContainerLowest = OraColors.White,
-    surfaceContainerLow = OraColors.Gray50,
+    surfaceContainerLow = OraColors.LightBackground,
     surfaceContainer = LightSurfaceContainer,
-    surfaceContainerHigh = OraColors.Gray150,
-    surfaceContainerHighest = OraColors.Gray200,
+    surfaceContainerHigh = OraColors.LightSurfaceVariant,
+    surfaceContainerHighest = OraColors.LightSurfaceContainer,
     outline = LightOutline,
     outlineVariant = LightOutlineVariant,
     error = OraColors.Error,
     onError = OraColors.White,
-    errorContainer = OraColors.Error.copy(alpha = 0.1f),
+    errorContainer = OraColors.ErrorLight,
     onErrorContainer = OraColors.Error
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = OraColors.Gray100,
-    onPrimary = OraColors.Gray900,
-    primaryContainer = OraColors.Gray800,
-    onPrimaryContainer = OraColors.Gray100,
-    secondary = OraColors.Gray300,
-    onSecondary = OraColors.Gray900,
-    secondaryContainer = OraColors.Gray800,
-    onSecondaryContainer = OraColors.Gray100,
-    tertiary = OraColors.Accent,
-    onTertiary = OraColors.White,
+    primary = OraColors.AccentDark,
+    onPrimary = OraColors.Black,
+    primaryContainer = OraColors.AccentMuted,
+    onPrimaryContainer = OraColors.AccentDark,
+    secondary = OraColors.DarkTextSecondary,
+    onSecondary = OraColors.White,
+    secondaryContainer = OraColors.DarkSurfaceContainer,
+    onSecondaryContainer = OraColors.DarkTextPrimary,
+    tertiary = OraColors.AccentDark,
+    onTertiary = OraColors.Black,
     background = DarkBackground,
     onBackground = DarkOnBackground,
     surface = DarkSurface,
     onSurface = DarkOnSurface,
     surfaceVariant = DarkSurfaceVariant,
     onSurfaceVariant = DarkOnSurfaceVariant,
-    surfaceContainerLowest = OraColors.Black,
-    surfaceContainerLow = OraColors.Gray950,
+    surfaceContainerLowest = OraColors.DarkBackground,
+    surfaceContainerLow = OraColors.DarkSurface,
     surfaceContainer = DarkSurfaceContainer,
-    surfaceContainerHigh = OraColors.Gray800,
-    surfaceContainerHighest = OraColors.Gray700,
+    surfaceContainerHigh = OraColors.DarkSurfaceVariant,
+    surfaceContainerHighest = OraColors.DarkSurfaceContainer,
     outline = DarkOutline,
     outlineVariant = DarkOutlineVariant,
     error = OraColors.Error,
@@ -81,61 +81,57 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 // ============================================================================
-// Extended Colors (accessible via LocalOraColors)
+// Extended Colors
 // ============================================================================
 
 data class OraExtendedColors(
     val accent: Color,
-    val accentSubtle: Color,
+    val accentHover: Color,
     val success: Color,
     val warning: Color,
     val userBubble: Color,
     val userBubbleText: Color,
-    val codeBlock: Color,
-    val glassSurface: Color,
-    val glassBorder: Color,
-    val divider: Color
+    val assistantText: Color,
+    val textTertiary: Color,
+    val borderSubtle: Color
 )
 
 val LocalOraColors = staticCompositionLocalOf {
     OraExtendedColors(
         accent = OraColors.Accent,
-        accentSubtle = OraColors.AccentSubtle,
+        accentHover = OraColors.AccentHover,
         success = OraColors.Success,
         warning = OraColors.Warning,
         userBubble = OraColors.UserBubbleLight,
-        userBubbleText = OraColors.UserBubbleTextLight,
-        codeBlock = OraColors.CodeBlockLight,
-        glassSurface = OraColors.GlassLight,
-        glassBorder = OraColors.GlassBorderLight,
-        divider = OraColors.Gray200
+        userBubbleText = OraColors.UserBubbleText,
+        assistantText = OraColors.AssistantText,
+        textTertiary = OraColors.LightTextTertiary,
+        borderSubtle = OraColors.LightBorderSubtle
     )
 }
 
 private val LightExtendedColors = OraExtendedColors(
     accent = OraColors.Accent,
-    accentSubtle = OraColors.AccentSubtle,
+    accentHover = OraColors.AccentHover,
     success = OraColors.Success,
     warning = OraColors.Warning,
     userBubble = OraColors.UserBubbleLight,
-    userBubbleText = OraColors.UserBubbleTextLight,
-    codeBlock = OraColors.CodeBlockLight,
-    glassSurface = OraColors.GlassLight,
-    glassBorder = OraColors.GlassBorderLight,
-    divider = OraColors.Gray200
+    userBubbleText = OraColors.LightTextPrimary,
+    assistantText = OraColors.AssistantText,
+    textTertiary = OraColors.LightTextTertiary,
+    borderSubtle = OraColors.LightBorderSubtle
 )
 
 private val DarkExtendedColors = OraExtendedColors(
-    accent = OraColors.Accent,
-    accentSubtle = OraColors.Accent.copy(alpha = 0.15f),
+    accent = OraColors.AccentDark,
+    accentHover = OraColors.AccentDark,
     success = OraColors.Success,
     warning = OraColors.Warning,
     userBubble = OraColors.UserBubbleDark,
-    userBubbleText = OraColors.UserBubbleTextDark,
-    codeBlock = OraColors.CodeBlockDark,
-    glassSurface = OraColors.GlassDark,
-    glassBorder = OraColors.GlassBorderDark,
-    divider = OraColors.Gray800
+    userBubbleText = OraColors.DarkTextPrimary,
+    assistantText = OraColors.AssistantTextDark,
+    textTertiary = OraColors.DarkTextTertiary,
+    borderSubtle = OraColors.DarkBorderSubtle
 )
 
 // ============================================================================

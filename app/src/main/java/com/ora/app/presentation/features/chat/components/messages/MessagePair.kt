@@ -17,12 +17,12 @@ fun MessagePair(
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        // LG: User message
+        // User message
         UserMessage(content = interaction.userMessage)
 
         Spacer(modifier = Modifier.height(Dimensions.messageSpacing))
 
-        // LG: Assistant response
+        // Assistant response
         AssistantMessage(
             content = interaction.assistantResponse,
             status = interaction.status,

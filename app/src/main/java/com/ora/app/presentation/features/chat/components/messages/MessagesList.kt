@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ora.app.domain.model.Interaction
+import com.ora.app.presentation.designsystem.components.ScrollFadeContainer
 import com.ora.app.presentation.theme.Dimensions
 
 @Composable
@@ -20,22 +21,27 @@ fun MessagesList(
     onCopy: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        state = listState,
-        contentPadding = PaddingValues(vertical = Dimensions.spacingMd),
-        verticalArrangement = Arrangement.spacedBy(Dimensions.spacing24)
+    ScrollFadeContainer(
+        listState = listState,
+        modifier = modifier
     ) {
-        itemsIndexed(
-            items = interactions,
-            key = { _, interaction -> interaction.id }
-        ) { index, interaction ->
-            MessagePair(
-                interaction = interaction,
-                onThumbsUp = { onThumbsUp(index) },
-                onThumbsDown = { onThumbsDown(index) },
-                onCopy = { onCopy(interaction.assistantResponse) }
-            )
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            state = listState,
+            contentPadding = PaddingValues(vertical = Dimensions.spacingMd),
+            verticalArrangement = Arrangement.spacedBy(Dimensions.spacing24)
+        ) {
+            itemsIndexed(
+                items = interactions,
+                key = { _, interaction -> interaction.id }
+            ) { index, interaction ->
+                MessagePair(
+                    interaction = interaction,
+                    onThumbsUp = { onThumbsUp(index) },
+                    onThumbsDown = { onThumbsDown(index) },
+                    onCopy = { onCopy(interaction.assistantResponse) }
+                )
+            }
         }
     }
 }

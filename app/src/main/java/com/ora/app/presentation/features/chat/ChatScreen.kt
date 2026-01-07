@@ -9,7 +9,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +31,7 @@ import com.ora.app.presentation.features.chat.components.WelcomeContent
 import com.ora.app.presentation.features.chat.components.drawer.SessionDrawer
 import com.ora.app.presentation.features.chat.components.input.MessageInput
 import com.ora.app.presentation.features.chat.components.messages.MessagesList
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -103,73 +105,83 @@ fun ChatScreen(
                 activeSessionId = state.activeSessionId,
                 searchQuery = state.sessionSearchQuery,
                 onSearchQueryChange = { viewModel.dispatch(ChatIntent.UpdateSearchQuery(it)) },
-                onSessionClick = { viewModel.dispatch(ChatIntent.SelectSession(it)) },
+                onSessionClick = {
+                    viewModel.dispatch(ChatIntent.SelectSession(it))
+                    scope.launch { drawerState.close() }
+                },
                 onDeleteSession = { viewModel.dispatch(ChatIntent.DeleteSession(it)) },
-                onNewChat = { viewModel.dispatch(ChatIntent.NewChat) },
-                onProfileClick = onNavigateToProfile,
+                onNewChat = {
+                    viewModel.dispatch(ChatIntent.NewChat)
+                    scope.launch { drawerState.close() }
+                },
+                onProfileClick = {
+                    scope.launch { drawerState.close() }
+                    onNavigateToProfile()
+                },
                 onLogout = { viewModel.dispatch(ChatIntent.Logout) }
             )
         },
         gesturesEnabled = true
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
-                .systemBarsPadding()
+                .statusBarsPadding()
                 .imePadding()
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                // Top bar
-                ChatTopBar(
-                    title = state.activeSession?.title ?: "Ora",
-                    agents = state.agents,
-                    selectedAgent = state.selectedAgent,
-                    onAgentSelected = { viewModel.dispatch(ChatIntent.SelectAgent(it)) },
-                    onMenuClick = { viewModel.dispatch(ChatIntent.ToggleDrawer) }
-                )
+            // Top bar
+            ChatTopBar(
+                title = state.activeSession?.title ?: "Ora",
+                agents = state.agents,
+                selectedAgent = state.selectedAgent,
+                onAgentSelected = { viewModel.dispatch(ChatIntent.SelectAgent(it)) },
+                onMenuClick = { viewModel.dispatch(ChatIntent.ToggleDrawer) },
+                onNewChat = { viewModel.dispatch(ChatIntent.NewChat) }
+            )
 
-                // Main content
-                Box(modifier = Modifier.weight(1f)) {
-                    when {
-                        state.isLoadingAgents -> {
-                            LoadingIndicator(fullScreen = true)
-                        }
-                        state.isLoadingHistory -> {
-                            LoadingIndicator(fullScreen = true)
-                        }
-                        state.error != null && state.interactions.isEmpty() -> {
-                            ErrorDisplay(
-                                message = state.error!!,
-                                onRetry = { viewModel.dispatch(ChatIntent.RetryLastAction) }
-                            )
-                        }
-                        state.isWelcomeScreen -> {
-                            WelcomeContent(agent = state.selectedAgent)
-                        }
-                        else -> {
-                            MessagesList(
-                                interactions = state.interactions,
-                                listState = listState,
-                                onThumbsUp = { index ->
-                                    viewModel.dispatch(
-                                        ChatIntent.SetFeedback(index, FeedbackState.POSITIVE)
-                                    )
-                                },
-                                onThumbsDown = { index ->
-                                    viewModel.dispatch(
-                                        ChatIntent.SetFeedback(index, FeedbackState.NEGATIVE)
-                                    )
-                                },
-                                onCopy = { content ->
-                                    viewModel.dispatch(ChatIntent.CopyMessage(content))
-                                }
-                            )
-                        }
+            // Main content
+            Box(modifier = Modifier.weight(1f)) {
+                when {
+                    state.isLoadingAgents -> {
+                        LoadingIndicator(fullScreen = true)
+                    }
+                    state.isLoadingHistory -> {
+                        LoadingIndicator(fullScreen = true)
+                    }
+                    state.error != null && state.interactions.isEmpty() -> {
+                        ErrorDisplay(
+                            message = state.error!!,
+                            onRetry = { viewModel.dispatch(ChatIntent.RetryLastAction) }
+                        )
+                    }
+                    state.isWelcomeScreen -> {
+                        WelcomeContent(agent = state.selectedAgent)
+                    }
+                    else -> {
+                        MessagesList(
+                            interactions = state.interactions,
+                            listState = listState,
+                            onThumbsUp = { index ->
+                                viewModel.dispatch(
+                                    ChatIntent.SetFeedback(index, FeedbackState.POSITIVE)
+                                )
+                            },
+                            onThumbsDown = { index ->
+                                viewModel.dispatch(
+                                    ChatIntent.SetFeedback(index, FeedbackState.NEGATIVE)
+                                )
+                            },
+                            onCopy = { content ->
+                                viewModel.dispatch(ChatIntent.CopyMessage(content))
+                            }
+                        )
                     }
                 }
+            }
 
-                // Input
+            // Input bar
+            Box(modifier = Modifier.navigationBarsPadding()) {
                 MessageInput(
                     value = state.inputText,
                     onValueChange = { viewModel.dispatch(ChatIntent.UpdateInput(it)) },

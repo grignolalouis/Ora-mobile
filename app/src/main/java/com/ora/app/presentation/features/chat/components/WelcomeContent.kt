@@ -1,63 +1,117 @@
 package com.ora.app.presentation.features.chat.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.ora.app.R
 import com.ora.app.domain.model.Agent
 import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.theme.OraTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun WelcomeContent(
     agent: Agent?,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(Dimensions.paddingScreen),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    var showContent by remember { mutableStateOf(false) }
+    var showSubtitle by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(100)
+        showContent = true
+        delay(200)
+        showSubtitle = true
+    }
+
+    Box(
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        // Main greeting
-        Text(
-            text = agent?.greeting ?: "Hello",
-            style = MaterialTheme.typography.displaySmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground,
-            textAlign = TextAlign.Center
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = Dimensions.spacing32),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            // Logo
+            AnimatedVisibility(
+                visible = showContent,
+                enter = fadeIn(tween(300)) + slideInVertically(
+                    animationSpec = tween(300, easing = FastOutSlowInEasing),
+                    initialOffsetY = { 15 }
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_ora_logo),
+                    contentDescription = "Ora",
+                    modifier = Modifier.size(80.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                )
+            }
 
-        Spacer(modifier = Modifier.height(Dimensions.spacing12))
+            Spacer(modifier = Modifier.height(Dimensions.spacing20))
 
-        // Subtitle
-        Text(
-            text = agent?.description ?: "How can I help you today?",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.Center
-        )
-
-        // Capabilities (subtle, minimal)
-        if (agent != null && agent.capabilities.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(Dimensions.spacing48))
-
-            agent.capabilities.take(3).forEach { capability ->
+            // Main greeting
+            AnimatedVisibility(
+                visible = showContent,
+                enter = fadeIn(tween(400)) + slideInVertically(
+                    animationSpec = tween(400, easing = FastOutSlowInEasing),
+                    initialOffsetY = { 20 }
+                )
+            ) {
                 Text(
-                    text = capability,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(vertical = Dimensions.spacing4)
+                    text = agent?.greeting ?: "How can I help you today?",
+                    style = MaterialTheme.typography.headlineMedium.copy(
+                        fontWeight = FontWeight.Normal,
+                        lineHeight = 36.sp
+                    ),
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(Dimensions.spacing16))
+
+            // Subtle hint
+            AnimatedVisibility(
+                visible = showSubtitle,
+                enter = fadeIn(tween(300))
+            ) {
+                Text(
+                    text = "Ask me anything",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = OraTheme.colors.textTertiary,
+                    textAlign = TextAlign.Center
                 )
             }
         }

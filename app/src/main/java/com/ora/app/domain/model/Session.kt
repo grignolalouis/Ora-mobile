@@ -56,38 +56,54 @@ data class SessionDetail(
                 if (current.role == "user") {
                     // LG: Chercher la réponse assistant suivante (peut être après des messages tool)
                     var j = i + 1
-                    var assistantMsg: Message? = null
+                    var firstAssistantMsg: Message? = null
+                    var finalAssistantMsg: Message? = null
                     val toolCallsForInteraction = mutableListOf<ToolCall>()
+                    var foundToolCalls = false
 
-                    // LG: Parcourir jusqu'à trouver un message assistant ou un autre message user
+                    // LG: Parcourir jusqu'à trouver un autre message user
                     while (j < history.size) {
                         val nextMsg = history[j]
                         when (nextMsg.role) {
                             "assistant" -> {
-                                assistantMsg = nextMsg
-                                // LG: Parser les tool_calls de ce message assistant
-                                nextMsg.toolCalls?.forEach { tc ->
-                                    val response = toolResponseMap[tc.id]
-                                    val argsMap = try {
-                                        kotlinx.serialization.json.Json.parseToJsonElement(tc.arguments)
-                                            .let { it as? kotlinx.serialization.json.JsonObject }
-                                            ?.mapValues { (_, v) -> v.toString().trim('"') }
-                                            ?: mapOf("raw" to tc.arguments)
-                                    } catch (_: Exception) {
-                                        mapOf("raw" to tc.arguments)
-                                    }
-                                    toolCallsForInteraction.add(
-                                        ToolCall(
-                                            id = tc.id,
-                                            name = tc.name,
-                                            arguments = argsMap,
-                                            status = if (response != null) ToolStatus.SUCCESS else ToolStatus.PENDING,
-                                            result = response?.content
-                                        )
-                                    )
+                                if (firstAssistantMsg == null) {
+                                    firstAssistantMsg = nextMsg
                                 }
-                                j++
-                                break
+                                // LG: Parser les tool_calls de ce message assistant
+                                if (!nextMsg.toolCalls.isNullOrEmpty()) {
+                                    foundToolCalls = true
+                                    nextMsg.toolCalls.forEach { tc ->
+                                        val response = toolResponseMap[tc.id]
+                                        val argsMap = try {
+                                            kotlinx.serialization.json.Json.parseToJsonElement(tc.arguments)
+                                                .let { it as? kotlinx.serialization.json.JsonObject }
+                                                ?.mapValues { (_, v) -> v.toString().trim('"') }
+                                                ?: mapOf("raw" to tc.arguments)
+                                        } catch (_: Exception) {
+                                            mapOf("raw" to tc.arguments)
+                                        }
+                                        toolCallsForInteraction.add(
+                                            ToolCall(
+                                                id = tc.id,
+                                                name = tc.name,
+                                                arguments = argsMap,
+                                                status = if (response != null) ToolStatus.SUCCESS else ToolStatus.PENDING,
+                                                result = response?.content
+                                            )
+                                        )
+                                    }
+                                    j++
+                                    // LG: Continue pour chercher le message assistant final après les tool responses
+                                } else if (foundToolCalls) {
+                                    // LG: C'est le message assistant final après les tool calls
+                                    finalAssistantMsg = nextMsg
+                                    j++
+                                    break
+                                } else {
+                                    // LG: Message assistant sans tool calls (réponse directe)
+                                    j++
+                                    break
+                                }
                             }
                             "tool" -> {
                                 // LG: Skip les messages tool, on les a déjà mappés
@@ -101,11 +117,18 @@ data class SessionDetail(
                         }
                     }
 
+                    // LG: Utiliser le contenu du message final si présent, sinon le premier
+                    val assistantContent = when {
+                        finalAssistantMsg != null -> finalAssistantMsg.content
+                        firstAssistantMsg != null -> firstAssistantMsg.content
+                        else -> ""
+                    }
+
                     result.add(
                         Interaction(
                             userMessage = current.content,
-                            assistantResponse = assistantMsg?.content ?: "",
-                            status = if (assistantMsg != null) InteractionStatus.COMPLETED else InteractionStatus.PENDING,
+                            assistantResponse = assistantContent,
+                            status = if (firstAssistantMsg != null) InteractionStatus.COMPLETED else InteractionStatus.PENDING,
                             timestamp = current.timestamp,
                             toolCalls = toolCallsForInteraction
                         )
