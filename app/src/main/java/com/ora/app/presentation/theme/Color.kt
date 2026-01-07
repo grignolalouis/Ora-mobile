@@ -61,6 +61,7 @@ object OraColors {
     val Error = Color(0xFFDC2626)                     // Red-600
     val ErrorLight = Color(0xFFFEE2E2)                // Red-100
     val Warning = Color(0xFFCA8A04)                   // Yellow-600
+    val Info = Color(0xFF3B82F6)                      // Blue-500
 
     // -------------------------------------------------------------------------
     // Chat Specific

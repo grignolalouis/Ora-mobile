@@ -5,15 +5,12 @@ import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
-import androidx.compose.animation.slideInVertically
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,7 +26,7 @@ import com.ora.app.domain.model.FeedbackState
 import com.ora.app.domain.model.InteractionStatus
 import com.ora.app.domain.model.ToolCall
 import com.ora.app.presentation.designsystem.components.MarkdownText
-import com.ora.app.presentation.features.chat.components.tools.ToolCallCard
+import com.ora.app.presentation.features.chat.components.tools.ToolsContainer
 import com.ora.app.presentation.theme.Dimensions
 
 @Composable
@@ -63,19 +60,7 @@ fun AssistantMessage(
     ) {
         // Tool calls if present
         if (toolCalls.isNotEmpty()) {
-            AnimatedVisibility(
-                visible = true,
-                enter = fadeIn(tween(300)) + slideInVertically(
-                    animationSpec = tween(300),
-                    initialOffsetY = { 10 }
-                )
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(Dimensions.spacing8)) {
-                    toolCalls.forEach { toolCall ->
-                        ToolCallCard(toolCall = toolCall)
-                    }
-                }
-            }
+            ToolsContainer(toolCalls = toolCalls)
             Spacer(modifier = Modifier.height(Dimensions.spacing12))
         }
 
