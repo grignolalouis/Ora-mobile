@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -26,10 +27,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import com.ora.app.presentation.designsystem.components.ScrollFadeContainer
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.Logout
-import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -41,21 +42,37 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
 import com.ora.app.R
 import com.ora.app.domain.model.Agent
 import com.ora.app.domain.model.Session
 import com.ora.app.presentation.theme.Dimensions
 import com.ora.app.presentation.theme.OraTheme
 
+private val avatarColors = listOf(
+    Color(0xFF6895D2),
+    Color(0xFF8EAAB8),
+    Color(0xFFC2E38E),
+    Color(0xFFFDE767),
+    Color(0xFFF8D063),
+    Color(0xFFF3B95F),
+    Color(0xFFD9654E),
+    Color(0xFFD04848)
+)
+
 @Composable
 fun SessionDrawer(
+    userName: String?,
+    userProfilePictureUrl: String?,
     agent: Agent?,
     sessions: List<Session>,
     activeSessionId: String?,
@@ -65,13 +82,12 @@ fun SessionDrawer(
     onDeleteSession: (String) -> Unit,
     onNewChat: () -> Unit,
     onProfileClick: () -> Unit,
-    onLogout: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val drawerShape = RoundedCornerShape(16.dp)
 
     ModalDrawerSheet(
-        modifier = modifier.width(316.dp),
+        modifier = modifier.width(300.dp),
         drawerContainerColor = Color.Transparent,
         drawerShape = RoundedCornerShape(0.dp)
     ) {
@@ -80,12 +96,7 @@ fun SessionDrawer(
                 .fillMaxHeight()
                 .statusBarsPadding()
                 .navigationBarsPadding()
-                .padding(
-                    start = Dimensions.spacing12,
-                    end = Dimensions.spacing12,
-                    top = Dimensions.spacing12,
-                    bottom = Dimensions.spacing12
-                )
+                .padding(12.dp)
                 .shadow(
                     elevation = 8.dp,
                     shape = drawerShape,
@@ -105,167 +116,219 @@ fun SessionDrawer(
                     .fillMaxHeight()
                     .padding(top = Dimensions.spacing20)
             ) {
-            // Logo and brand
-            Row(
-                modifier = Modifier.padding(horizontal = Dimensions.spacing20),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_ora_logo),
-                    contentDescription = "Ora",
-                    modifier = Modifier.size(28.dp),
-                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
-                )
-                Spacer(modifier = Modifier.width(Dimensions.spacing10))
-                Text(
-                    text = "Ora",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp
-                    ),
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            Spacer(modifier = Modifier.height(Dimensions.spacing16))
-
-            // Search bar
-            SearchBar(
-                query = searchQuery,
-                onQueryChange = onSearchQueryChange,
-                modifier = Modifier.padding(horizontal = Dimensions.spacing12)
-            )
-
-            Spacer(modifier = Modifier.height(Dimensions.spacing12))
-
-            // Sessions list with fade
-            val sessionsListState = rememberLazyListState()
-
-            ScrollFadeContainer(
-                listState = sessionsListState,
-                modifier = Modifier.weight(1f),
-                fadeColor = MaterialTheme.colorScheme.surface
-            ) {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    state = sessionsListState,
-                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                // Logo and brand
+                Row(
+                    modifier = Modifier.padding(horizontal = Dimensions.spacing20),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    itemsIndexed(
-                        items = sessions,
-                        key = { _, session -> session.id }
-                    ) { index, session ->
-                        AnimatedVisibility(
-                            visible = true,
-                            enter = fadeIn(tween(150, delayMillis = index * 20)) +
-                                    slideInVertically(
-                                        animationSpec = tween(150, delayMillis = index * 20),
-                                        initialOffsetY = { 8 }
-                                    )
-                        ) {
-                            SessionItem(
-                                session = session,
-                                isSelected = session.id == activeSessionId,
-                                onClick = { onSessionClick(session.id) },
-                                onDelete = { onDeleteSession(session.id) }
-                            )
-                        }
-                    }
+                    Image(
+                        painter = painterResource(id = R.drawable.ic_ora_logo),
+                        contentDescription = "Ora",
+                        modifier = Modifier.size(28.dp),
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                    )
+                    Spacer(modifier = Modifier.width(Dimensions.spacing10))
+                    Text(
+                        text = "Ora",
+                        style = MaterialTheme.typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp
+                        ),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
 
-                // Empty state
-                if (sessions.isEmpty()) {
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(Dimensions.spacing32),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally
+                Spacer(modifier = Modifier.height(Dimensions.spacing16))
+
+                // Search bar
+                SearchBar(
+                    query = searchQuery,
+                    onQueryChange = onSearchQueryChange,
+                    modifier = Modifier.padding(horizontal = Dimensions.spacing12)
+                )
+
+                Spacer(modifier = Modifier.height(Dimensions.spacing12))
+
+                // Sessions list with fade
+                val sessionsListState = rememberLazyListState()
+
+                ScrollFadeContainer(
+                    listState = sessionsListState,
+                    modifier = Modifier.weight(1f),
+                    fadeColor = MaterialTheme.colorScheme.surface
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        state = sessionsListState,
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        itemsIndexed(
+                            items = sessions,
+                            key = { _, session -> session.id }
+                        ) { index, session ->
+                            AnimatedVisibility(
+                                visible = true,
+                                enter = fadeIn(tween(150, delayMillis = index * 20)) +
+                                        slideInVertically(
+                                            animationSpec = tween(150, delayMillis = index * 20),
+                                            initialOffsetY = { 8 }
+                                        )
                             ) {
-                                Text(
-                                    text = "No conversations yet",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                SessionItem(
+                                    session = session,
+                                    isSelected = session.id == activeSessionId,
+                                    onClick = { onSessionClick(session.id) },
+                                    onDelete = { onDeleteSession(session.id) }
                                 )
-                                Spacer(modifier = Modifier.height(Dimensions.spacing4))
-                                Text(
-                                    text = "Start a new chat",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = OraTheme.colors.textTertiary
-                                )
+                            }
+                        }
+
+                        // Empty state
+                        if (sessions.isEmpty()) {
+                            item {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(Dimensions.spacing32),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally
+                                    ) {
+                                        Text(
+                                            text = "No conversations yet",
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        Spacer(modifier = Modifier.height(Dimensions.spacing4))
+                                        Text(
+                                            text = "Start a new chat",
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = OraTheme.colors.textTertiary
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
-                }
-            }
 
-            // Divider
-            HorizontalDivider(
-                modifier = Modifier.padding(horizontal = Dimensions.spacing16),
-                color = MaterialTheme.colorScheme.outlineVariant
-            )
+                // Divider
+                HorizontalDivider(
+                    modifier = Modifier.padding(horizontal = Dimensions.spacing16),
+                    thickness = 0.5.dp,
+                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                )
 
-            // Bottom section
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(Dimensions.spacing12)
-            ) {
-                DrawerFooterItem(
-                    icon = Icons.Outlined.Person,
-                    label = "Profile",
+                // User profile section at bottom
+                UserProfileSection(
+                    userName = userName,
+                    userProfilePictureUrl = userProfilePictureUrl,
                     onClick = onProfileClick
                 )
-
-                Spacer(modifier = Modifier.height(Dimensions.spacing4))
-
-                DrawerFooterItem(
-                    icon = Icons.AutoMirrored.Outlined.Logout,
-                    label = "Sign out",
-                    onClick = onLogout
-                )
-            }
             }
         }
     }
 }
 
 @Composable
-private fun DrawerFooterItem(
-    icon: ImageVector,
-    label: String,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+private fun UserProfileSection(
+    userName: String?,
+    userProfilePictureUrl: String?,
+    onClick: () -> Unit
 ) {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick
             )
-            .padding(
-                horizontal = Dimensions.spacing12,
-                vertical = Dimensions.spacing12
-            ),
+            .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Avatar
+        UserAvatar(
+            name = userName,
+            profilePictureUrl = userProfilePictureUrl,
+            size = 36
+        )
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        // Name
+        Text(
+            text = userName ?: "User",
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
+        )
+
         Icon(
-            imageVector = icon,
+            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
             contentDescription = null,
             modifier = Modifier.size(20.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(modifier = Modifier.width(Dimensions.spacing12))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
     }
+}
+
+@Composable
+private fun UserAvatar(
+    name: String?,
+    profilePictureUrl: String?,
+    size: Int
+) {
+    val gradientColors = remember(name) {
+        generateAvatarGradient(name ?: "User")
+    }
+
+    Box(
+        modifier = Modifier
+            .size(size.dp)
+            .clip(CircleShape)
+            .then(
+                if (profilePictureUrl == null) {
+                    Modifier.background(Brush.linearGradient(gradientColors))
+                } else {
+                    Modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                }
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        if (profilePictureUrl != null) {
+            AsyncImage(
+                model = profilePictureUrl,
+                contentDescription = "Profile picture",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            Text(
+                text = getInitials(name ?: "User"),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+        }
+    }
+}
+
+private fun getInitials(name: String): String {
+    return name.split(" ")
+        .take(2)
+        .mapNotNull { it.firstOrNull()?.uppercaseChar() }
+        .joinToString("")
+        .ifEmpty { name.take(2).uppercase() }
+}
+
+private fun generateAvatarGradient(name: String): List<Color> {
+    val hash = name.hashCode().let { if (it < 0) -it else it }
+    val index = hash % avatarColors.size
+    val nextIndex = (index + 1) % avatarColors.size
+    return listOf(avatarColors[index], avatarColors[nextIndex])
 }

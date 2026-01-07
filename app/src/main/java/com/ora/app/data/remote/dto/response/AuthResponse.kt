@@ -42,3 +42,12 @@ data class UserResponse(
     val message: String,
     val user: UserDto
 )
+
+@Serializable
+data class ProfilePictureResponse(
+    val code: Int,
+    val status: String,
+    val message: String,
+    @SerialName("profile_picture_url")
+    val profilePictureUrl: String
+)

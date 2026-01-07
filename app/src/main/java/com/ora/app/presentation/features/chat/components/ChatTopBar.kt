@@ -86,12 +86,25 @@ fun ChatTopBar(
             .padding(horizontal = Dimensions.spacing12)
     ) {
         // Left side: Menu button
-        TopBarIconButton(
-            icon = Icons.Outlined.Menu,
-            contentDescription = "Menu",
-            onClick = onMenuClick,
-            modifier = Modifier.align(Alignment.CenterStart)
-        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .size(42.dp)
+                .clip(CircleShape)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = onMenuClick
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Outlined.Menu,
+                contentDescription = "Menu",
+                modifier = Modifier.size(26.dp),
+                tint = MaterialTheme.colorScheme.onSurface
+            )
+        }
 
         // Center: Agent selector
         Box(modifier = Modifier.align(Alignment.Center)) {

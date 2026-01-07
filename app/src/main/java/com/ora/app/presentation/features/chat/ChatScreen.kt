@@ -3,7 +3,6 @@ package com.ora.app.presentation.features.chat
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,6 +23,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.ora.app.domain.model.FeedbackState
+import com.ora.app.presentation.components.toast.ToastManager
+import com.ora.app.presentation.components.toast.ToastType
 import com.ora.app.presentation.components.common.ErrorDisplay
 import com.ora.app.presentation.components.common.LoadingIndicator
 import com.ora.app.presentation.features.chat.components.ChatTopBar
@@ -49,6 +50,7 @@ fun ChatScreen(
 
     // Init
     LaunchedEffect(Unit) {
+        viewModel.dispatch(ChatIntent.LoadUser)
         viewModel.dispatch(ChatIntent.LoadAgents)
     }
 
@@ -86,10 +88,15 @@ fun ChatScreen(
                 is ChatEffect.CopiedToClipboard -> {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("message", effect.message))
-                    Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
+                    ToastManager.success("Copied to clipboard")
                 }
                 is ChatEffect.ShowToast -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    when (effect.type) {
+                        ToastType.Success -> ToastManager.success(effect.message)
+                        ToastType.Error -> ToastManager.error(effect.message)
+                        ToastType.Warning -> ToastManager.warning(effect.message)
+                        ToastType.Info -> ToastManager.info(effect.message)
+                    }
                 }
                 ChatEffect.NavigateToLogin -> onLogout()
             }
@@ -100,6 +107,8 @@ fun ChatScreen(
         drawerState = drawerState,
         drawerContent = {
             SessionDrawer(
+                userName = state.user?.name,
+                userProfilePictureUrl = state.user?.profilePictureUrl,
                 agent = state.selectedAgent,
                 sessions = state.filteredSessions,
                 activeSessionId = state.activeSessionId,
@@ -117,8 +126,7 @@ fun ChatScreen(
                 onProfileClick = {
                     scope.launch { drawerState.close() }
                     onNavigateToProfile()
-                },
-                onLogout = { viewModel.dispatch(ChatIntent.Logout) }
+                }
             )
         },
         gesturesEnabled = true

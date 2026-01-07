@@ -8,6 +8,7 @@ import com.ora.app.domain.usecase.auth.LoginUseCase
 import com.ora.app.domain.usecase.auth.LogoutUseCase
 import com.ora.app.domain.usecase.auth.RefreshTokenUseCase
 import com.ora.app.domain.usecase.auth.RegisterUseCase
+import com.ora.app.domain.usecase.auth.UploadProfilePictureUseCase
 import com.ora.app.domain.usecase.session.CreateSessionUseCase
 import com.ora.app.domain.usecase.session.DeleteSessionUseCase
 import com.ora.app.domain.usecase.session.GetSessionHistoryUseCase
@@ -24,6 +25,7 @@ val useCaseModule = module {
     factory { RefreshTokenUseCase(get()) }
     factory { GetCurrentUserUseCase(get()) }
     factory { DeleteAccountUseCase(get()) }
+    factory { UploadProfilePictureUseCase(get()) }
 
     // LG: Agent
     factory { GetAgentsUseCase(get()) }

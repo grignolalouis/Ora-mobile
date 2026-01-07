@@ -5,6 +5,7 @@ import com.ora.app.presentation.mvi.UiIntent
 
 sealed interface ChatIntent : UiIntent {
     // LG: Init
+    data object LoadUser : ChatIntent
     data object LoadAgents : ChatIntent
     data class SelectAgent(val agentType: String) : ChatIntent
 

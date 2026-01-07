@@ -12,7 +12,9 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import com.ora.app.domain.usecase.agent.GetAgentsUseCase
+import com.ora.app.domain.usecase.auth.GetCurrentUserUseCase
 import com.ora.app.domain.usecase.auth.LogoutUseCase
+import com.ora.app.presentation.components.toast.ToastType
 import com.ora.app.domain.usecase.session.CreateSessionUseCase
 import com.ora.app.domain.usecase.session.DeleteSessionUseCase
 import com.ora.app.domain.usecase.session.GetSessionHistoryUseCase
@@ -32,7 +34,8 @@ class ChatViewModel(
     private val deleteSessionUseCase: DeleteSessionUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val streamResponseUseCase: StreamResponseUseCase,
-    private val logoutUseCase: LogoutUseCase
+    private val logoutUseCase: LogoutUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase
 ) : MviViewModel<ChatState, ChatIntent, ChatEffect>(ChatState()) {
 
     private var streamJob: Job? = null
@@ -40,6 +43,7 @@ class ChatViewModel(
 
     override suspend fun handleIntent(intent: ChatIntent) {
         when (intent) {
+            ChatIntent.LoadUser -> loadUser()
             ChatIntent.LoadAgents -> loadAgents()
             is ChatIntent.SelectAgent -> selectAgent(intent.agentType)
             ChatIntent.LoadSessions -> loadSessions()
@@ -59,6 +63,13 @@ class ChatViewModel(
             ChatIntent.RetryLastAction -> retryLastAction()
             ChatIntent.Logout -> logout()
         }
+    }
+
+    private suspend fun loadUser() {
+        getCurrentUserUseCase()
+            .onSuccess { user ->
+                setState { copy(user = user) }
+            }
     }
 
     private suspend fun loadAgents() {
@@ -171,10 +182,10 @@ class ChatViewModel(
                 if (currentState.activeSessionId == sessionId) {
                     newChat()
                 }
-                sendEffect(ChatEffect.ShowToast("Session deleted"))
+                sendEffect(ChatEffect.ShowToast("Session deleted", ToastType.Success))
             }
             .onError { error ->
-                sendEffect(ChatEffect.ShowToast(error.toUserMessage()))
+                sendEffect(ChatEffect.ShowToast(error.toUserMessage(), ToastType.Error))
             }
     }
 

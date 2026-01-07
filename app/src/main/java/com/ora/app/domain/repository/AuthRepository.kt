@@ -10,4 +10,10 @@ interface AuthRepository {
     suspend fun refreshTokens(): Result<User>
     suspend fun getCurrentUser(): Result<User>
     suspend fun deleteAccount(): Result<Unit>
+    suspend fun uploadProfilePicture(
+        userId: String,
+        fileName: String,
+        contentType: String,
+        fileBytes: ByteArray
+    ): Result<String>
 }

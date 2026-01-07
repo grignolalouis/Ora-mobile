@@ -64,6 +64,18 @@ class AuthRepositoryImpl(
         Result.error(ErrorMapper.map(e))
     }
 
+    override suspend fun uploadProfilePicture(
+        userId: String,
+        fileName: String,
+        contentType: String,
+        fileBytes: ByteArray
+    ): Result<String> = try {
+        val response = api.uploadProfilePicture(userId, fileName, contentType, fileBytes)
+        Result.success(response.profilePictureUrl)
+    } catch (e: Exception) {
+        Result.error(ErrorMapper.map(e))
+    }
+
     private fun saveTokens(token: String, expires: String) {
         tokenManager.accessToken = token
         tokenManager.tokenExpiry = DateTimeUtil.parseIsoToMillis(expires)

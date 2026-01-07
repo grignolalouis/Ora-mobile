@@ -2,9 +2,13 @@ package com.ora.app.core.network
 
 import android.util.Log
 import android.webkit.CookieManager
+import com.ora.app.core.error.ApiException
 import com.ora.app.core.storage.TokenManager
+import com.ora.app.data.remote.dto.response.BaseResponse
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -13,6 +17,7 @@ import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import okhttp3.Cookie
@@ -54,6 +59,21 @@ object HttpClientFactory {
                 }
             }
             level = LogLevel.BODY
+        }
+
+        // LG: Valider les réponses HTTP et lancer ApiException pour les erreurs
+        HttpResponseValidator {
+            validateResponse { response ->
+                if (!response.status.isSuccess()) {
+                    val errorBody = try {
+                        response.body<BaseResponse>()
+                    } catch (e: Exception) {
+                        null
+                    }
+                    val errorMessage = errorBody?.message ?: "Request failed with status ${response.status.value}"
+                    throw ApiException(response.status, errorMessage)
+                }
+            }
         }
 
         defaultRequest {

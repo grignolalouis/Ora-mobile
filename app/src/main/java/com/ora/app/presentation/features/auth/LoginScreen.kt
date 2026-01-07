@@ -1,20 +1,23 @@
 package com.ora.app.presentation.features.auth
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,20 +35,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import com.ora.app.R
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ora.app.presentation.components.toast.ToastManager
 import com.ora.app.presentation.designsystem.components.OraButton
 import com.ora.app.presentation.designsystem.components.OraTextField
 import com.ora.app.presentation.designsystem.components.OraTextButton
 import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -55,7 +60,6 @@ fun LoginScreen(
     viewModel: AuthViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    val context = LocalContext.current
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(Unit) {
@@ -63,7 +67,7 @@ fun LoginScreen(
             when (effect) {
                 AuthEffect.NavigateToChat -> onLoginSuccess()
                 is AuthEffect.ShowError -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    ToastManager.error(effect.message)
                 }
             }
         }
@@ -84,15 +88,26 @@ fun LoginScreen(
         ) {
             Spacer(modifier = Modifier.height(80.dp))
 
-            // Logo / Brand
-            Text(
-                text = "Ora",
-                style = MaterialTheme.typography.displayLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            // Logo + Brand
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(Dimensions.spacing12)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_ora_logo),
+                    contentDescription = "Ora Logo",
+                    modifier = Modifier.size(52.dp),
+                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
+                )
+                Text(
+                    text = "Ora",
+                    style = MaterialTheme.typography.displayLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
 
-            Spacer(modifier = Modifier.height(Dimensions.spacing8))
+            Spacer(modifier = Modifier.height(Dimensions.spacing12))
 
             Text(
                 text = "Welcome back",
@@ -100,7 +115,7 @@ fun LoginScreen(
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
-            Spacer(modifier = Modifier.height(Dimensions.spacing64))
+            Spacer(modifier = Modifier.height(Dimensions.spacing48))
 
             // Form
             Column(

@@ -1,8 +1,11 @@
 package com.ora.app.presentation.features.profile
 
-import android.widget.Toast
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,18 +17,20 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.DarkMode
-import androidx.compose.material.icons.outlined.LightMode
-import androidx.compose.material.icons.outlined.Person
-import androidx.compose.material.icons.outlined.PhoneAndroid
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -33,19 +38,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.ora.app.core.storage.ThemeMode
 import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.domain.model.User
+import com.ora.app.presentation.components.toast.ToastManager
 import com.ora.app.presentation.components.common.LoadingIndicator
 import com.ora.app.presentation.designsystem.components.OraButton
 import com.ora.app.presentation.designsystem.components.OraButtonStyle
@@ -64,6 +73,27 @@ fun UserProfileScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
 
+    val imagePicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            context.contentResolver.openInputStream(it)?.use { inputStream ->
+                val bytes = inputStream.readBytes()
+                val contentType = context.contentResolver.getType(it) ?: "image/jpeg"
+                val fileName = "profile_${System.currentTimeMillis()}.${
+                    contentType.substringAfter("/")
+                }"
+                viewModel.dispatch(
+                    UserProfileIntent.UploadProfilePicture(
+                        fileName = fileName,
+                        contentType = contentType,
+                        fileBytes = bytes
+                    )
+                )
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.dispatch(UserProfileIntent.LoadUser)
     }
@@ -73,13 +103,12 @@ fun UserProfileScreen(
             when (effect) {
                 UserProfileEffect.NavigateToLogin -> onLogout()
                 is UserProfileEffect.ShowToast -> {
-                    Toast.makeText(context, effect.message, Toast.LENGTH_SHORT).show()
+                    ToastManager.info(effect.message)
                 }
             }
         }
     }
 
-    // Delete confirmation dialog
     if (state.showDeleteConfirmation) {
         DeleteAccountDialog(
             onConfirm = { viewModel.dispatch(UserProfileIntent.ConfirmDeleteAccount) },
@@ -94,38 +123,25 @@ fun UserProfileScreen(
             .systemBarsPadding()
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top bar
-            ProfileTopBar(onBackClick = onNavigateBack)
+            // Minimal top bar
+            TopBar(onBackClick = onNavigateBack)
 
-            // Content
             when {
                 state.isLoading || state.isDeleting -> {
                     LoadingIndicator(fullScreen = true)
                 }
                 state.error != null -> {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(Dimensions.paddingScreen),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = state.error!!,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error
-                        )
-                        Spacer(modifier = Modifier.height(Dimensions.spacingMd))
-                        OraButton(
-                            text = "Retry",
-                            onClick = { viewModel.dispatch(UserProfileIntent.LoadUser) },
-                            style = OraButtonStyle.Secondary
-                        )
-                    }
+                    ErrorState(
+                        error = state.error!!,
+                        onRetry = { viewModel.dispatch(UserProfileIntent.LoadUser) }
+                    )
                 }
                 state.user != null -> {
-                    UserProfileContent(
+                    ProfileContent(
                         user = state.user!!,
+                        isUploadingPicture = state.isUploadingPicture,
+                        onAvatarClick = { imagePicker.launch("image/*") },
+                        onLogout = { viewModel.dispatch(UserProfileIntent.Logout) },
                         onDeleteAccount = { viewModel.dispatch(UserProfileIntent.ShowDeleteConfirmation) },
                         themePreferences = koinInject()
                     )
@@ -136,37 +152,52 @@ fun UserProfileScreen(
 }
 
 @Composable
-private fun ProfileTopBar(onBackClick: () -> Unit) {
-    Box(
+private fun TopBar(onBackClick: () -> Unit) {
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp)
-            .padding(horizontal = Dimensions.spacing8)
+            .padding(horizontal = 4.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = onBackClick,
-            modifier = Modifier.align(Alignment.CenterStart)
-        ) {
+        IconButton(onClick = onBackClick) {
             Icon(
-                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                 contentDescription = "Back",
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
+    }
+}
 
+@Composable
+private fun ErrorState(error: String, onRetry: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(Dimensions.paddingScreen),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Text(
-            text = "Profile",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.align(Alignment.Center)
+            text = error,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        OraButton(
+            text = "Retry",
+            onClick = onRetry,
+            style = OraButtonStyle.Secondary
         )
     }
 }
 
 @Composable
-private fun UserProfileContent(
+private fun ProfileContent(
     user: User,
+    isUploadingPicture: Boolean,
+    onAvatarClick: () -> Unit,
+    onLogout: () -> Unit,
     onDeleteAccount: () -> Unit,
     themePreferences: ThemePreferences
 ) {
@@ -176,224 +207,273 @@ private fun UserProfileContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = Dimensions.paddingScreen),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp)
     ) {
-        Spacer(modifier = Modifier.height(Dimensions.spacing24))
+        Spacer(modifier = Modifier.height(24.dp))
 
-        // Avatar
-        Box(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-            contentAlignment = Alignment.Center
+        // Avatar section - centered
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (user.profilePictureUrl != null) {
+            Avatar(
+                user = user,
+                isUploading = isUploadingPicture,
+                onClick = onAvatarClick
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = user.name,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = user.email,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.height(48.dp))
+
+        // Settings sections
+        SettingsSection(title = "Preferences") {
+            SettingsItem(
+                label = "Theme",
+                value = when (themeMode) {
+                    ThemeMode.SYSTEM -> "System"
+                    ThemeMode.LIGHT -> "Light"
+                    ThemeMode.DARK -> "Dark"
+                },
+                onClick = {
+                    val nextMode = when (themeMode) {
+                        ThemeMode.SYSTEM -> ThemeMode.LIGHT
+                        ThemeMode.LIGHT -> ThemeMode.DARK
+                        ThemeMode.DARK -> ThemeMode.SYSTEM
+                    }
+                    scope.launch { themePreferences.setThemeMode(nextMode) }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        SettingsSection(title = "Account") {
+            SettingsItem(
+                label = "Role",
+                value = user.role.replaceFirstChar { it.uppercase() }
+            )
+            SettingsDivider()
+            SettingsItem(
+                label = "Email status",
+                value = if (user.verifiedEmail) "Verified" else "Not verified",
+                valueColor = if (user.verifiedEmail) OraColors.Success else OraColors.Warning
+            )
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        SettingsSection {
+            SettingsItem(
+                label = "Sign out",
+                onClick = onLogout
+            )
+            SettingsDivider()
+            SettingsItem(
+                label = "Delete account",
+                labelColor = OraColors.Error,
+                onClick = onDeleteAccount
+            )
+        }
+
+        Spacer(modifier = Modifier.height(48.dp))
+    }
+}
+
+@Composable
+private fun Avatar(
+    user: User,
+    isUploading: Boolean,
+    onClick: () -> Unit
+) {
+    val gradientColors = remember(user.id) {
+        generateAvatarGradient(user.name)
+    }
+
+    Box(
+        modifier = Modifier
+            .size(96.dp)
+            .clip(CircleShape)
+            .then(
+                if (user.profilePictureUrl == null) {
+                    Modifier.background(Brush.linearGradient(gradientColors))
+                } else {
+                    Modifier.background(MaterialTheme.colorScheme.surfaceContainerHigh)
+                }
+            )
+            .clickable(enabled = !isUploading, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        when {
+            isUploading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(32.dp),
+                    strokeWidth = 2.dp,
+                    color = Color.White
+                )
+            }
+            user.profilePictureUrl != null -> {
                 AsyncImage(
                     model = user.profilePictureUrl,
                     contentDescription = "Profile picture",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
-            } else {
-                Icon(
-                    imageVector = Icons.Outlined.Person,
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                // Edit overlay
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.25f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.CameraAlt,
+                        contentDescription = "Change photo",
+                        modifier = Modifier.size(24.dp),
+                        tint = Color.White
+                    )
+                }
+            }
+            else -> {
+                // Initials
+                Text(
+                    text = getInitials(user.name),
+                    fontSize = 42.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    letterSpacing = 2.sp
                 )
+                // Subtle edit hint
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(28.dp)
+                            .clip(CircleShape)
+                            .background(Color.Black.copy(alpha = 0.3f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.CameraAlt,
+                            contentDescription = "Add photo",
+                            modifier = Modifier.size(14.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
             }
         }
-
-        Spacer(modifier = Modifier.height(Dimensions.spacingMd))
-
-        // Name
-        Text(
-            text = user.name,
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Spacer(modifier = Modifier.height(Dimensions.spacing4))
-
-        // Email
-        Text(
-            text = user.email,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Spacer(modifier = Modifier.height(Dimensions.spacing32))
-
-        // Settings section
-        SettingsSection(title = "Appearance") {
-            ThemeSelector(
-                selectedMode = themeMode,
-                onModeSelected = { mode ->
-                    scope.launch { themePreferences.setThemeMode(mode) }
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(Dimensions.spacingMd))
-
-        // Account info section
-        SettingsSection(title = "Account") {
-            SettingsRow(
-                label = "Role",
-                value = user.role.replaceFirstChar { it.uppercase() }
-            )
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-            SettingsRow(
-                label = "Email verified",
-                value = if (user.verifiedEmail) "Yes" else "No"
-            )
-        }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        // Delete account button
-        OraButton(
-            text = "Delete Account",
-            onClick = onDeleteAccount,
-            style = OraButtonStyle.Ghost,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(Dimensions.spacing24))
     }
 }
 
 @Composable
 private fun SettingsSection(
-    title: String,
+    title: String? = null,
     content: @Composable () -> Unit
 ) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(
-                start = Dimensions.spacing4,
-                bottom = Dimensions.spacing8
+    Column {
+        if (title != null) {
+            Text(
+                text = title.uppercase(),
+                style = MaterialTheme.typography.labelSmall,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                letterSpacing = 1.sp,
+                modifier = Modifier.padding(bottom = 8.dp, start = 4.dp)
             )
-        )
-        Box(
+        }
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(Dimensions.radiusMd))
+                .clip(RoundedCornerShape(12.dp))
                 .background(MaterialTheme.colorScheme.surfaceContainerLow)
         ) {
-            Column(
-                modifier = Modifier.padding(Dimensions.spacingMd)
-            ) {
-                content()
+            content()
+        }
+    }
+}
+
+@Composable
+private fun SettingsItem(
+    label: String,
+    value: String? = null,
+    labelColor: Color = MaterialTheme.colorScheme.onSurface,
+    valueColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    onClick: (() -> Unit)? = null
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null,
+                        onClick = onClick
+                    )
+                } else Modifier
+            )
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            color = labelColor
+        )
+
+        if (value != null || onClick != null) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                if (value != null) {
+                    Text(
+                        text = value,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = valueColor
+                    )
+                }
+                if (onClick != null) {
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ThemeSelector(
-    selectedMode: ThemeMode,
-    onModeSelected: (ThemeMode) -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Dimensions.spacing8)
-    ) {
-        ThemeOption(
-            icon = Icons.Outlined.PhoneAndroid,
-            label = "System",
-            isSelected = selectedMode == ThemeMode.SYSTEM,
-            onClick = { onModeSelected(ThemeMode.SYSTEM) },
-            modifier = Modifier.weight(1f)
-        )
-        ThemeOption(
-            icon = Icons.Outlined.LightMode,
-            label = "Light",
-            isSelected = selectedMode == ThemeMode.LIGHT,
-            onClick = { onModeSelected(ThemeMode.LIGHT) },
-            modifier = Modifier.weight(1f)
-        )
-        ThemeOption(
-            icon = Icons.Outlined.DarkMode,
-            label = "Dark",
-            isSelected = selectedMode == ThemeMode.DARK,
-            onClick = { onModeSelected(ThemeMode.DARK) },
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-@Composable
-private fun ThemeOption(
-    icon: ImageVector,
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(Dimensions.radiusSm))
-            .background(
-                if (isSelected) {
-                    MaterialTheme.colorScheme.surfaceContainerHigh
-                } else {
-                    MaterialTheme.colorScheme.surfaceContainerLow
-                }
-            )
-            .clickable(onClick = onClick)
-            .padding(vertical = Dimensions.spacing12),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = label,
-            modifier = Modifier.size(Dimensions.iconSizeMd),
-            tint = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            }
-        )
-        Spacer(modifier = Modifier.height(Dimensions.spacing4))
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            }
-        )
-    }
-}
-
-@Composable
-private fun SettingsRow(label: String, value: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = Dimensions.spacing8),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-    }
+private fun SettingsDivider() {
+    HorizontalDivider(
+        modifier = Modifier.padding(horizontal = 16.dp),
+        thickness = 0.5.dp,
+        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+    )
 }
 
 @Composable
@@ -421,7 +501,8 @@ private fun DeleteAccountDialog(
             TextButton(onClick = onConfirm) {
                 Text(
                     text = "Delete",
-                    color = OraColors.Error
+                    color = OraColors.Error,
+                    fontWeight = FontWeight.SemiBold
                 )
             }
         },
@@ -431,6 +512,34 @@ private fun DeleteAccountDialog(
             }
         },
         containerColor = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(Dimensions.radiusLg)
+        shape = RoundedCornerShape(16.dp)
     )
+}
+
+// Utility functions
+
+private fun getInitials(name: String): String {
+    return name.split(" ")
+        .take(2)
+        .mapNotNull { it.firstOrNull()?.uppercaseChar() }
+        .joinToString("")
+        .ifEmpty { name.take(2).uppercase() }
+}
+
+private val avatarColors = listOf(
+    Color(0xFF6895D2),
+    Color(0xFF8EAAB8),
+    Color(0xFFC2E38E),
+    Color(0xFFFDE767),
+    Color(0xFFF8D063),
+    Color(0xFFF3B95F),
+    Color(0xFFD9654E),
+    Color(0xFFD04848)
+)
+
+private fun generateAvatarGradient(name: String): List<Color> {
+    val hash = name.hashCode().let { if (it < 0) -it else it }
+    val index = hash % avatarColors.size
+    val nextIndex = (index + 1) % avatarColors.size
+    return listOf(avatarColors[index], avatarColors[nextIndex])
 }

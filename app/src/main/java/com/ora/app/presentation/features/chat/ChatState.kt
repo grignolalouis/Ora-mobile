@@ -3,9 +3,13 @@ package com.ora.app.presentation.features.chat
 import com.ora.app.domain.model.Agent
 import com.ora.app.domain.model.Interaction
 import com.ora.app.domain.model.Session
+import com.ora.app.domain.model.User
 import com.ora.app.presentation.mvi.UiState
 
 data class ChatState(
+    // LG: User
+    val user: User? = null,
+
     // LG: Agent selection
     val agents: List<Agent> = emptyList(),
     val selectedAgent: Agent? = null,
