@@ -8,11 +8,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.ora.app.R
 
-// ============================================================================
-// ORA Design System - Typography
-// Urbanist font family for a modern, clean look
-// ============================================================================
-
 val Urbanist = FontFamily(
     Font(R.font.urbanist_regular, FontWeight.Normal),
     Font(R.font.urbanist_medium, FontWeight.Medium),

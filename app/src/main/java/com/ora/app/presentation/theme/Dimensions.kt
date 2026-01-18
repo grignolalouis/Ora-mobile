@@ -1,16 +1,7 @@
 package com.ora.app.presentation.theme
 
 import androidx.compose.ui.unit.dp
-
-// ============================================================================
-// ORA Design System - Spacing & Dimensions
-// Clean, consistent spacing based on 4dp grid
-// ============================================================================
-
 object Dimensions {
-    // -------------------------------------------------------------------------
-    // Base Spacing (4dp grid)
-    // -------------------------------------------------------------------------
     val spacing2 = 2.dp
     val spacing4 = 4.dp
     val spacing6 = 6.dp
@@ -28,9 +19,6 @@ object Dimensions {
     val spacing64 = 64.dp
     val spacing80 = 80.dp
 
-    // -------------------------------------------------------------------------
-    // Semantic Spacing
-    // -------------------------------------------------------------------------
     val spacingXxs = spacing2
     val spacingXs = spacing4
     val spacingSm = spacing8
@@ -39,18 +27,12 @@ object Dimensions {
     val spacingXl = spacing32
     val spacingXxl = spacing48
 
-    // -------------------------------------------------------------------------
-    // Screen Padding
-    // -------------------------------------------------------------------------
     val paddingScreen = spacing20
     val paddingScreenHorizontal = spacing20
     val paddingScreenVertical = spacing16
     val paddingCard = spacing16
     val paddingButton = spacing16
 
-    // -------------------------------------------------------------------------
-    // Border Radius
-    // -------------------------------------------------------------------------
     val radiusNone = 0.dp
     val radiusXs = 4.dp
     val radiusSm = 8.dp
@@ -60,9 +42,6 @@ object Dimensions {
     val radiusXxl = 24.dp
     val radiusFull = 999.dp
 
-    // -------------------------------------------------------------------------
-    // Component Sizes
-    // -------------------------------------------------------------------------
     val buttonHeight = 52.dp
     val buttonHeightSmall = 40.dp
     val textFieldHeight = 52.dp
@@ -78,9 +57,6 @@ object Dimensions {
     val avatarSizeLg = 56.dp
     val avatarSizeXl = 80.dp
 
-    // -------------------------------------------------------------------------
-    // Chat Specific
-    // -------------------------------------------------------------------------
     val messageBubbleMaxWidth = 0.85f
     val messageMaxWidth = 0.85f
     val messagePadding = spacing16
@@ -90,16 +66,10 @@ object Dimensions {
     val inputBarHeight = 56.dp
     val inputBarPadding = spacing12
 
-    // -------------------------------------------------------------------------
-    // Drawer
-    // -------------------------------------------------------------------------
     val drawerWidth = 300.dp
     val sessionItemHeight = 52.dp
     val drawerItemHeight = 48.dp
 
-    // -------------------------------------------------------------------------
-    // Elevation / Blur
-    // -------------------------------------------------------------------------
     val elevationNone = 0.dp
     val elevationSm = 2.dp
     val elevationMd = 4.dp

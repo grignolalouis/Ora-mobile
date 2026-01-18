@@ -15,11 +15,6 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import com.ora.app.core.storage.ThemeMode
 
-// ============================================================================
-// ORA Design System - Claude-inspired Theme
-// Warm, minimal, professional
-// ============================================================================
-
 private val LightColorScheme = lightColorScheme(
     primary = OraColors.Accent,
     onPrimary = OraColors.White,
@@ -80,10 +75,6 @@ private val DarkColorScheme = darkColorScheme(
     onErrorContainer = OraColors.Error
 )
 
-// ============================================================================
-// Extended Colors
-// ============================================================================
-
 data class OraExtendedColors(
     val accent: Color,
     val accentHover: Color,
@@ -134,10 +125,6 @@ private val DarkExtendedColors = OraExtendedColors(
     borderSubtle = OraColors.DarkBorderSubtle
 )
 
-// ============================================================================
-// Theme Composable
-// ============================================================================
-
 @Composable
 fun OraTheme(
     themeMode: ThemeMode = ThemeMode.SYSTEM,
@@ -176,10 +163,6 @@ fun OraTheme(
         )
     }
 }
-
-// ============================================================================
-// Extension for easy access
-// ============================================================================
 
 object OraTheme {
     val colors: OraExtendedColors

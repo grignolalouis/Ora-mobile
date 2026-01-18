@@ -32,8 +32,6 @@ class MainActivity : ComponentActivity() {
                 Box(modifier = Modifier.fillMaxSize()) {
                     val navController = rememberNavController()
                     NavGraph(navController = navController)
-
-                    // Global toast overlay
                     ToastHost()
                 }
             }

@@ -2,21 +2,10 @@ package com.ora.app.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-// ============================================================================
-// ORA Design System - Claude-inspired Warm Minimal Palette
-// Professional, clean, refined aesthetic
-// ============================================================================
-
 object OraColors {
-    // -------------------------------------------------------------------------
-    // Core Colors
-    // -------------------------------------------------------------------------
     val White = Color(0xFFFFFFFF)
     val Black = Color(0xFF000000)
 
-    // -------------------------------------------------------------------------
-    // Light Mode - Warm Beige Palette (Claude-inspired)
-    // -------------------------------------------------------------------------
     val LightBackground = Color(0xFFFAF9F7)          // Warm off-white
     val LightSurface = Color(0xFFFFFFFF)              // Pure white for cards
     val LightSurfaceVariant = Color(0xFFF5F4F0)       // Slightly warm gray
@@ -29,9 +18,6 @@ object OraColors {
     val LightTextSecondary = Color(0xFF6B6A68)        // Muted gray
     val LightTextTertiary = Color(0xFF9A9893)         // Light muted
 
-    // -------------------------------------------------------------------------
-    // Dark Mode - Warm Dark Palette
-    // -------------------------------------------------------------------------
     val DarkBackground = Color(0xFF1A1918)            // Warm dark
     val DarkSurface = Color(0xFF242321)               // Slightly lighter
     val DarkSurfaceVariant = Color(0xFF2E2D2A)        // Card surface
@@ -44,18 +30,12 @@ object OraColors {
     val DarkTextSecondary = Color(0xFFA8A7A3)         // Muted
     val DarkTextTertiary = Color(0xFF6B6A68)          // Very muted
 
-    // -------------------------------------------------------------------------
-    // Accent Color - Neutral (black/white based on theme)
-    // -------------------------------------------------------------------------
     val Accent = Color(0xFF1A1A18)                    // Near black
     val AccentDark = Color(0xFFF5F5F3)                // Off-white for dark mode
     val AccentHover = Color(0xFF3A3A38)               // Slightly lighter black
     val AccentLight = Color(0xFFF0F0EE)               // Light gray
     val AccentMuted = Color(0x1A1A1A18)               // 10% black
 
-    // -------------------------------------------------------------------------
-    // Semantic Colors
-    // -------------------------------------------------------------------------
     val Success = Color(0xFF16A34A)                   // Green-600
     val SuccessLight = Color(0xFFDCFCE7)              // Green-100
     val Error = Color(0xFFDC2626)                     // Red-600
@@ -63,9 +43,6 @@ object OraColors {
     val Warning = Color(0xFFCA8A04)                   // Yellow-600
     val Info = Color(0xFF3B82F6)                      // Blue-500
 
-    // -------------------------------------------------------------------------
-    // Chat Specific
-    // -------------------------------------------------------------------------
     // User message bubble - subtle warm tone
     val UserBubbleLight = Color(0xFFE8E6E1)           // Warm light gray
     val UserBubbleDark = Color(0xFF3A3836)            // Warm dark gray
@@ -75,10 +52,6 @@ object OraColors {
     val AssistantText = Color(0xFF1A1A18)
     val AssistantTextDark = Color(0xFFF5F5F3)
 }
-
-// ============================================================================
-// Material3 Color Scheme Mappings
-// ============================================================================
 
 // Light Theme
 val LightBackground = OraColors.LightBackground
