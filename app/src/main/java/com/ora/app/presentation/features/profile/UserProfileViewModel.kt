@@ -6,8 +6,11 @@ import com.ora.app.domain.usecase.auth.GetCurrentUserUseCase
 import com.ora.app.domain.usecase.auth.LogoutUseCase
 import com.ora.app.domain.usecase.auth.UploadProfilePictureUseCase
 import com.ora.app.presentation.mvi.MviViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class UserProfileViewModel(
+@HiltViewModel
+class UserProfileViewModel @Inject constructor(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val deleteAccountUseCase: DeleteAccountUseCase,
     private val logoutUseCase: LogoutUseCase,

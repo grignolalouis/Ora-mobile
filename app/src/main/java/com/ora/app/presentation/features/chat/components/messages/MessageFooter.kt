@@ -17,8 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.ora.app.domain.model.FeedbackState
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
 
 @Composable
 fun MessageFooter(

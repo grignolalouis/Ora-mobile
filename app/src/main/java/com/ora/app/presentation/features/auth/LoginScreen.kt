@@ -46,18 +46,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ora.app.presentation.components.toast.ToastManager
+import com.ora.app.presentation.designsystem.components.toast.ToastManager
 import com.ora.app.presentation.designsystem.components.OraButton
 import com.ora.app.presentation.designsystem.components.OraTextField
 import com.ora.app.presentation.designsystem.components.OraTextButton
-import com.ora.app.presentation.theme.Dimensions
-import org.koin.androidx.compose.koinViewModel
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun LoginScreen(
     onNavigateToRegister: () -> Unit,
     onLoginSuccess: () -> Unit,
-    viewModel: AuthViewModel = koinViewModel()
+    viewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val focusManager = LocalFocusManager.current

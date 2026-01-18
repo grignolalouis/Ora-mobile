@@ -54,21 +54,21 @@ import coil3.compose.AsyncImage
 import com.ora.app.core.storage.ThemeMode
 import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.domain.model.User
-import com.ora.app.presentation.components.toast.ToastManager
-import com.ora.app.presentation.components.common.LoadingIndicator
+import com.ora.app.presentation.designsystem.components.toast.ToastManager
+import com.ora.app.presentation.designsystem.components.LoadingIndicator
 import com.ora.app.presentation.designsystem.components.OraButton
 import com.ora.app.presentation.designsystem.components.OraButtonStyle
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
-import org.koin.compose.koinInject
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun UserProfileScreen(
     onNavigateBack: () -> Unit,
     onLogout: () -> Unit,
-    viewModel: UserProfileViewModel = koinViewModel()
+    themePreferences: ThemePreferences,
+    viewModel: UserProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
@@ -143,7 +143,7 @@ fun UserProfileScreen(
                         onAvatarClick = { imagePicker.launch("image/*") },
                         onLogout = { viewModel.dispatch(UserProfileIntent.Logout) },
                         onDeleteAccount = { viewModel.dispatch(UserProfileIntent.ShowDeleteConfirmation) },
-                        themePreferences = koinInject()
+                        themePreferences = themePreferences
                     )
                 }
             }

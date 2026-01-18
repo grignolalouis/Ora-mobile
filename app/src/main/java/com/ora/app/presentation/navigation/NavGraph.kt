@@ -9,17 +9,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.ora.app.core.session.AuthEvent
 import com.ora.app.core.session.AuthEventBus
+import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.core.storage.TokenManager
 import com.ora.app.presentation.features.auth.LoginScreen
 import com.ora.app.presentation.features.auth.RegisterScreen
 import com.ora.app.presentation.features.chat.ChatScreen
 import com.ora.app.presentation.features.profile.UserProfileScreen
-import org.koin.compose.koinInject
 
 @Composable
 fun NavGraph(
     navController: NavHostController,
-    tokenManager: TokenManager = koinInject()
+    tokenManager: TokenManager,
+    themePreferences: ThemePreferences
 ) {
     // LG: Écouter les événements de session expirée
     LaunchedEffect(Unit) {
@@ -88,12 +89,13 @@ fun NavGraph(
                     navController.navigate(Routes.Login.route) {
                         popUpTo(0) { inclusive = true }
                     }
-                }
+                },
+                themePreferences = themePreferences
             )
         }
 
         composable(
-            route = Routes.Chat_WithAgent.route,
+            route = Routes.ChatWithAgent.route,
             arguments = listOf(navArgument("agentType") { type = NavType.StringType })
         ) { backStackEntry ->
             val agentType = backStackEntry.arguments?.getString("agentType")

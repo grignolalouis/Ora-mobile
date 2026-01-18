@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.ora.app.domain.model.Interaction
 import com.ora.app.presentation.designsystem.components.ScrollFadeContainer
-import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.Dimensions
 
 @Composable
 fun MessagesList(

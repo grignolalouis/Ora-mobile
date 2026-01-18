@@ -5,8 +5,11 @@ import com.ora.app.core.error.toUserMessage
 import com.ora.app.domain.usecase.auth.LoginUseCase
 import com.ora.app.domain.usecase.auth.RegisterUseCase
 import com.ora.app.presentation.mvi.MviViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class AuthViewModel(
+@HiltViewModel
+class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase
 ) : MviViewModel<AuthState, AuthIntent, AuthEffect>(AuthState()) {

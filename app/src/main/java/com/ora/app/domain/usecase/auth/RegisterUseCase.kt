@@ -4,8 +4,9 @@ import com.ora.app.core.error.AppError
 import com.ora.app.core.util.Result
 import com.ora.app.domain.model.User
 import com.ora.app.domain.repository.AuthRepository
+import javax.inject.Inject
 
-class RegisterUseCase(private val authRepository: AuthRepository) {
+class RegisterUseCase @Inject constructor(private val authRepository: AuthRepository) {
 
     suspend operator fun invoke(name: String, email: String, password: String): Result<User> {
         if (name.isBlank()) {

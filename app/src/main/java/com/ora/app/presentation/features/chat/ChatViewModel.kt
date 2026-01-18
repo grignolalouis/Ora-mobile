@@ -14,7 +14,7 @@ import kotlinx.serialization.json.jsonPrimitive
 import com.ora.app.domain.usecase.agent.GetAgentsUseCase
 import com.ora.app.domain.usecase.auth.GetCurrentUserUseCase
 import com.ora.app.domain.usecase.auth.LogoutUseCase
-import com.ora.app.presentation.components.toast.ToastType
+import com.ora.app.presentation.designsystem.components.toast.ToastType
 import com.ora.app.domain.usecase.session.CreateSessionUseCase
 import com.ora.app.domain.usecase.session.DeleteSessionUseCase
 import com.ora.app.domain.usecase.session.GetSessionHistoryUseCase
@@ -22,11 +22,16 @@ import com.ora.app.domain.usecase.session.GetSessionsUseCase
 import com.ora.app.domain.usecase.session.SendMessageUseCase
 import com.ora.app.domain.usecase.session.StreamResponseUseCase
 import com.ora.app.presentation.mvi.MviViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class ChatViewModel(
+@HiltViewModel
+class ChatViewModel @Inject constructor(
     private val getAgentsUseCase: GetAgentsUseCase,
     private val getSessionsUseCase: GetSessionsUseCase,
     private val createSessionUseCase: CreateSessionUseCase,
@@ -50,7 +55,6 @@ class ChatViewModel(
             is ChatIntent.SelectSession -> selectSession(intent.sessionId)
             ChatIntent.NewChat -> newChat()
             is ChatIntent.DeleteSession -> deleteSession(intent.sessionId)
-            is ChatIntent.RenameSession -> { /* TODO */ }
             is ChatIntent.UpdateInput -> updateInput(intent.text)
             ChatIntent.SendMessage -> sendMessage()
             ChatIntent.CancelStreaming -> cancelStreaming()
@@ -266,7 +270,7 @@ class ChatViewModel(
         }
     }
 
-    private fun handleStreamEvent(event: StreamEvent) {
+    private suspend fun handleStreamEvent(event: StreamEvent) {
         when (event) {
             is StreamEvent.Delta -> {
                 val newContent = currentState.streamingContent + event.content
@@ -305,21 +309,23 @@ class ChatViewModel(
             }
             is StreamEvent.ToolCallEvent -> {
                 // LG: Convertir ToolCallData en ToolCall et ajouter à l'interaction
-                val newToolCalls = event.toolCalls.map { tc ->
-                    val argsMap = try {
-                        val jsonElement = Json.parseToJsonElement(tc.arguments)
-                        jsonElement.jsonObject.mapValues { (_, v) ->
-                            v.jsonPrimitive.content
+                val newToolCalls = withContext(Dispatchers.IO) {
+                    event.toolCalls.map { tc ->
+                        val argsMap = try {
+                            val jsonElement = Json.parseToJsonElement(tc.arguments)
+                            jsonElement.jsonObject.mapValues { (_, v) ->
+                                v.jsonPrimitive.content
+                            }
+                        } catch (_: Exception) {
+                            mapOf("raw" to tc.arguments)
                         }
-                    } catch (_: Exception) {
-                        mapOf("raw" to tc.arguments)
+                        ToolCall(
+                            id = tc.id,
+                            name = tc.functionName,
+                            arguments = argsMap,
+                            status = ToolStatus.RUNNING
+                        )
                     }
-                    ToolCall(
-                        id = tc.id,
-                        name = tc.functionName,
-                        arguments = argsMap,
-                        status = ToolStatus.RUNNING
-                    )
                 }
                 addToolCallsToLastInteraction(newToolCalls)
             }

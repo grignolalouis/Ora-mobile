@@ -1,4 +1,4 @@
-package com.ora.app.presentation.components.toast
+package com.ora.app.presentation.designsystem.components.toast
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
@@ -20,23 +20,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.Dimensions
 
-/**
- * Toast host composable that displays toasts from the ToastManager.
- * Toasts stack on top of each other with a visual overlay effect.
- *
- * Usage in MainActivity:
- * ```
- * Box(modifier = Modifier.fillMaxSize()) {
- *     // Your app content
- *     NavGraph(navController = navController)
- *
- *     // Toast overlay
- *     ToastHost()
- * }
- * ```
- */
 @Composable
 fun ToastHost(
     modifier: Modifier = Modifier,
@@ -54,11 +39,9 @@ fun ToastHost(
                 .padding(bottom = Dimensions.spacingXl),
             contentAlignment = Alignment.BottomCenter
         ) {
-            // Render toasts with stable keys - newest toast has highest z-index
             toasts.forEachIndexed { index, toast ->
-                val stackIndex = toasts.size - 1 - index // 0 = top (newest), higher = behind
+                val stackIndex = toasts.size - 1 - index
 
-                // Animation values based on stack position
                 val targetOffset = (stackIndex * 8).dp
                 val targetScale = 1f - (stackIndex * 0.05f)
                 val targetAlpha = 1f - (stackIndex * 0.15f)
@@ -95,9 +78,6 @@ fun ToastHost(
     }
 }
 
-/**
- * Alternative position options for ToastHost
- */
 object ToastPosition {
     val Top = Alignment.TopCenter
     val Bottom = Alignment.BottomCenter

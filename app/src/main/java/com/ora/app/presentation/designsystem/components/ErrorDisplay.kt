@@ -1,4 +1,4 @@
-package com.ora.app.presentation.components.common
+package com.ora.app.presentation.designsystem.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.Dimensions
 
 @Composable
 fun ErrorDisplay(

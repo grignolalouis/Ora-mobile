@@ -29,8 +29,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
 
 // ============================================================================
 // ORA Design System - Button Components

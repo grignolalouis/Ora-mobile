@@ -29,8 +29,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
 
 // ============================================================================
 // ORA Design System - TextField Component

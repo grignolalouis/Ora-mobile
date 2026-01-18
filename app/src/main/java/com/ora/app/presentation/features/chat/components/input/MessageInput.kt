@@ -29,7 +29,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.AttachFile
 import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.rounded.ArrowUpward
 import androidx.compose.material.icons.rounded.Stop
 import androidx.compose.material3.Icon
@@ -53,9 +52,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.OraTheme
 
 @Composable
 fun MessageInput(
@@ -244,13 +243,6 @@ fun MessageInput(
                             icon = Icons.Outlined.Image,
                             contentDescription = "Add image",
                             onClick = { imagePickerLauncher.launch("image/*") }
-                        )
-
-                        // Voice input button
-                        InputIconButton(
-                            icon = Icons.Outlined.Mic,
-                            contentDescription = "Voice input",
-                            onClick = { /* TODO: Voice recording */ }
                         )
                     }
 

@@ -16,9 +16,10 @@ import okhttp3.Response
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
+import java.io.Closeable
 import java.util.concurrent.TimeUnit
 
-class SSEClient(private val tokenManager: TokenManager) {
+class SSEClient(private val tokenManager: TokenManager) : Closeable {
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -84,5 +85,10 @@ class SSEClient(private val tokenManager: TokenManager) {
             Log.d("SSEClient", "Closing SSE connection")
             eventSource.cancel()
         }
+    }
+
+    override fun close() {
+        client.dispatcher.executorService.shutdown()
+        client.connectionPool.evictAll()
     }
 }

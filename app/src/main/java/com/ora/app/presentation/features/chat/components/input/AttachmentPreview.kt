@@ -35,8 +35,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.ora.app.presentation.theme.OraColors
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.OraTheme
 import java.util.UUID
 
 // ============================================================================

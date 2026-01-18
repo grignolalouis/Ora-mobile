@@ -27,7 +27,7 @@ import com.ora.app.domain.model.InteractionStatus
 import com.ora.app.domain.model.ToolCall
 import com.ora.app.presentation.designsystem.components.MarkdownText
 import com.ora.app.presentation.features.chat.components.tools.ToolsContainer
-import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.Dimensions
 
 @Composable
 fun AssistantMessage(

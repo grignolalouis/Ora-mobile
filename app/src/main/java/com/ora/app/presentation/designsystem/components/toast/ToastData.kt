@@ -1,10 +1,7 @@
-package com.ora.app.presentation.components.toast
+package com.ora.app.presentation.designsystem.components.toast
 
 import java.util.UUID
 
-/**
- * Toast severity types for visual styling
- */
 enum class ToastType {
     Success,
     Error,
@@ -12,26 +9,17 @@ enum class ToastType {
     Info
 }
 
-/**
- * Toast duration presets
- */
 enum class ToastDuration(val millis: Long) {
     Short(3000L),
     Medium(4500L),
     Long(6000L)
 }
 
-/**
- * Optional action button for toast
- */
 data class ToastAction(
     val label: String,
     val onClick: () -> Unit
 )
 
-/**
- * Data class representing a toast notification
- */
 data class ToastData(
     val id: String = UUID.randomUUID().toString(),
     val message: String,

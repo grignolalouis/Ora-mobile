@@ -1,31 +1,7 @@
 package com.ora.app
 
 import android.app.Application
-import com.ora.app.core.di.coreModule
-import com.ora.app.core.di.networkModule
-import com.ora.app.core.di.repositoryModule
-import com.ora.app.core.di.useCaseModule
-import com.ora.app.core.di.viewModelModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.android.ext.koin.androidLogger
-import org.koin.core.context.startKoin
-import org.koin.core.logger.Level
+import dagger.hilt.android.HiltAndroidApp
 
-class OraApplication : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-
-        startKoin {
-            androidLogger(Level.DEBUG)
-            androidContext(this@OraApplication)
-            modules(
-                coreModule,
-                networkModule,
-                repositoryModule,
-                useCaseModule,
-                viewModelModule
-            )
-        }
-    }
-}
+@HiltAndroidApp
+class OraApplication : Application()

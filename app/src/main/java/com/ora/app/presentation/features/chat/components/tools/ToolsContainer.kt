@@ -52,7 +52,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ora.app.domain.model.ToolCall
 import com.ora.app.domain.model.ToolStatus
-import com.ora.app.presentation.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.OraColors
 
 @Composable
 fun ToolsContainer(

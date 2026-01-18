@@ -12,8 +12,3 @@ data class CreateSessionRequest(
 data class SendMessageRequest(
     val message: String
 )
-
-@Serializable
-data class RenameSessionRequest(
-    val title: String
-)

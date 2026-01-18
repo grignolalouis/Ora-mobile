@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -81,11 +83,11 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
 
     // Ktor
-    implementation(platform(libs.koin.bom))
     implementation(libs.bundles.ktor)
 
-    // Koin DI
-    implementation(libs.bundles.koin)
+    // Hilt DI
+    implementation(libs.bundles.hilt)
+    ksp(libs.hilt.compiler)
 
     // Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)

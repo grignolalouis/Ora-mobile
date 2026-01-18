@@ -1,4 +1,4 @@
-package com.ora.app.presentation.components.toast
+package com.ora.app.presentation.designsystem.components.toast
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -7,15 +7,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Check
@@ -42,13 +38,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
 import kotlinx.coroutines.delay
 
-/**
- * Individual toast composable with animation and auto-dismiss
- */
 @Composable
 fun OraToast(
     toast: ToastData,
@@ -57,12 +50,11 @@ fun OraToast(
 ) {
     var isVisible by remember { mutableStateOf(false) }
 
-    // Animate in on appear
     LaunchedEffect(toast.id) {
         isVisible = true
         delay(toast.duration.millis)
         isVisible = false
-        delay(300) // Wait for exit animation
+        delay(300)
         onDismiss()
     }
 
@@ -80,9 +72,7 @@ fun OraToast(
     ) {
         ToastContent(
             toast = toast,
-            onDismiss = {
-                isVisible = false
-            }
+            onDismiss = { isVisible = false }
         )
     }
 }
@@ -128,7 +118,6 @@ private fun ToastContent(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(Dimensions.spacingSm)
         ) {
-            // Icon
             Icon(
                 imageVector = icon,
                 contentDescription = null,
@@ -136,7 +125,6 @@ private fun ToastContent(
                 modifier = Modifier.size(Dimensions.iconSizeMd)
             )
 
-            // Message
             Text(
                 text = toast.message,
                 style = MaterialTheme.typography.bodyMedium,
@@ -147,7 +135,6 @@ private fun ToastContent(
                 modifier = Modifier.weight(1f)
             )
 
-            // Action button (if any)
             toast.action?.let { action ->
                 TextButton(
                     onClick = {
@@ -164,7 +151,6 @@ private fun ToastContent(
                 }
             }
 
-            // Close button
             IconButton(
                 onClick = onDismiss,
                 modifier = Modifier.size(32.dp)
@@ -187,10 +173,7 @@ private data class ToastColors(
     val border: Color
 )
 
-private fun getToastColors(
-    type: ToastType,
-    isDarkTheme: Boolean
-): ToastColors {
+private fun getToastColors(type: ToastType, isDarkTheme: Boolean): ToastColors {
     return when (type) {
         ToastType.Success -> ToastColors(
             background = if (isDarkTheme) Color(0xFF1B3D2F) else OraColors.SuccessLight,

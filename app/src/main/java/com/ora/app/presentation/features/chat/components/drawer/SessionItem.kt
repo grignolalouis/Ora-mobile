@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.ora.app.domain.model.Session
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraColors
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraColors
+import com.ora.app.presentation.designsystem.theme.OraTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

@@ -57,8 +57,8 @@ import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import com.ora.app.R
 import com.ora.app.domain.model.Agent
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraTheme
 
 @Composable
 fun ChatTopBar(

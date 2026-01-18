@@ -14,7 +14,6 @@ sealed interface ChatIntent : UiIntent {
     data class SelectSession(val sessionId: String) : ChatIntent
     data object NewChat : ChatIntent
     data class DeleteSession(val sessionId: String) : ChatIntent
-    data class RenameSession(val sessionId: String, val title: String) : ChatIntent
 
     // LG: Messages
     data class UpdateInput(val text: String) : ChatIntent

@@ -3,8 +3,9 @@ package com.ora.app.domain.usecase.auth
 import com.ora.app.core.storage.TokenManager
 import com.ora.app.core.util.Result
 import com.ora.app.domain.repository.AuthRepository
+import javax.inject.Inject
 
-class LogoutUseCase(
+class LogoutUseCase @Inject constructor(
     private val authRepository: AuthRepository,
     private val tokenManager: TokenManager
 ) {

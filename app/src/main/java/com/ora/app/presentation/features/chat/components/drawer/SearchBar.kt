@@ -30,7 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
-import com.ora.app.presentation.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.Dimensions
 
 @Composable
 fun SearchBar(

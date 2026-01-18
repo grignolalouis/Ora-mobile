@@ -1,6 +1,6 @@
 package com.ora.app.presentation.features.chat
 
-import com.ora.app.presentation.components.toast.ToastType
+import com.ora.app.presentation.designsystem.components.toast.ToastType
 import com.ora.app.presentation.mvi.UiEffect
 
 sealed interface ChatEffect : UiEffect {

@@ -23,24 +23,24 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.ora.app.domain.model.FeedbackState
-import com.ora.app.presentation.components.toast.ToastManager
-import com.ora.app.presentation.components.toast.ToastType
-import com.ora.app.presentation.components.common.ErrorDisplay
-import com.ora.app.presentation.components.common.LoadingIndicator
+import com.ora.app.presentation.designsystem.components.toast.ToastManager
+import com.ora.app.presentation.designsystem.components.toast.ToastType
+import com.ora.app.presentation.designsystem.components.ErrorDisplay
+import com.ora.app.presentation.designsystem.components.LoadingIndicator
 import com.ora.app.presentation.features.chat.components.ChatTopBar
 import com.ora.app.presentation.features.chat.components.WelcomeContent
 import com.ora.app.presentation.features.chat.components.drawer.SessionDrawer
 import com.ora.app.presentation.features.chat.components.input.MessageInput
 import com.ora.app.presentation.features.chat.components.messages.MessagesList
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.koinViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun ChatScreen(
     onLogout: () -> Unit,
     onNavigateToProfile: () -> Unit,
     initialAgentType: String? = null,
-    viewModel: ChatViewModel = koinViewModel()
+    viewModel: ChatViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current

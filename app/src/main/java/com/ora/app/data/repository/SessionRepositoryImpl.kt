@@ -5,7 +5,6 @@ import com.ora.app.core.util.Result
 import com.ora.app.data.mapper.toDomain
 import com.ora.app.data.remote.api.AgentApiService
 import com.ora.app.data.remote.dto.request.CreateSessionRequest
-import com.ora.app.data.remote.dto.request.RenameSessionRequest
 import com.ora.app.data.remote.dto.request.SendMessageRequest
 import com.ora.app.data.remote.sse.SSEClient
 import com.ora.app.domain.model.Session
@@ -46,17 +45,6 @@ class SessionRepositoryImpl(
     override suspend fun deleteSession(agentType: String, sessionId: String): Result<Unit> = try {
         api.deleteSession(agentType, sessionId)
         Result.success(Unit)
-    } catch (e: Exception) {
-        Result.error(ErrorMapper.map(e))
-    }
-
-    override suspend fun renameSession(
-        agentType: String,
-        sessionId: String,
-        title: String
-    ): Result<Session> = try {
-        val response = api.renameSession(agentType, sessionId, RenameSessionRequest(title))
-        Result.success(response.session.toDomain())
     } catch (e: Exception) {
         Result.error(ErrorMapper.map(e))
     }

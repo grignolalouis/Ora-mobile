@@ -1,4 +1,4 @@
-package com.ora.app.presentation.theme
+package com.ora.app.presentation.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -42,8 +42,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraTheme
 
 // ============================================================================
 // Input Options Menu

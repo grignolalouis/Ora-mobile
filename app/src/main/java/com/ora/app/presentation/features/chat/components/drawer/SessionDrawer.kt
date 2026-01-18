@@ -54,8 +54,8 @@ import coil3.compose.AsyncImage
 import com.ora.app.R
 import com.ora.app.domain.model.Agent
 import com.ora.app.domain.model.Session
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraTheme
 
 private val avatarColors = listOf(
     Color(0xFF6895D2),

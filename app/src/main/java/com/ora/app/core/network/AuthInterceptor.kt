@@ -4,8 +4,11 @@ import android.util.Log
 import com.ora.app.core.session.AuthEvent
 import com.ora.app.core.session.AuthEventBus
 import com.ora.app.core.storage.TokenManager
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Interceptor
@@ -24,8 +27,7 @@ class AuthInterceptor(
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    @Volatile
-    private var isRefreshing = false
+    private val isRefreshing = AtomicBoolean(false)
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
@@ -47,29 +49,24 @@ class AuthInterceptor(
         val response = chain.proceed(requestWithAuth)
 
         // LG: Si 401, tenter le refresh
-        if (response.code == 401 && !isRefreshing) {
-            synchronized(this) {
-                if (!isRefreshing) {
-                    isRefreshing = true
-                    response.close()
+        if (response.code == 401 && isRefreshing.compareAndSet(false, true)) {
+            response.close()
 
-                    val refreshed = tryRefreshToken(chain)
-                    isRefreshing = false
+            val refreshed = tryRefreshToken(chain)
+            isRefreshing.set(false)
 
-                    if (refreshed) {
-                        // LG: Retry avec le nouveau token
-                        val retryRequest = originalRequest.newBuilder()
-                            .header("Authorization", "Bearer ${tokenManager.accessToken}")
-                            .build()
-                        return chain.proceed(retryRequest)
-                    } else {
-                        // LG: Refresh échoué, session expirée
-                        Log.w("AuthInterceptor", "Token refresh failed, session expired")
-                        runBlocking {
-                            tokenManager.clear()
-                            AuthEventBus.emit(AuthEvent.SessionExpired)
-                        }
-                    }
+            if (refreshed) {
+                // LG: Retry avec le nouveau token
+                val retryRequest = originalRequest.newBuilder()
+                    .header("Authorization", "Bearer ${tokenManager.accessToken}")
+                    .build()
+                return chain.proceed(retryRequest)
+            } else {
+                // LG: Refresh échoué, session expirée
+                Log.w("AuthInterceptor", "Token refresh failed, session expired")
+                CoroutineScope(Dispatchers.IO).launch {
+                    tokenManager.clear()
+                    AuthEventBus.emit(AuthEvent.SessionExpired)
                 }
             }
         }

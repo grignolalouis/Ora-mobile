@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ora.app.R
 import com.ora.app.domain.model.Agent
-import com.ora.app.presentation.theme.Dimensions
-import com.ora.app.presentation.theme.OraTheme
+import com.ora.app.presentation.designsystem.theme.Dimensions
+import com.ora.app.presentation.designsystem.theme.OraTheme
 import kotlinx.coroutines.delay
 
 @Composable
