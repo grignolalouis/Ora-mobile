@@ -1,0 +1,130 @@
+<resources>
+    <string name="app_name">Ora</string>
+
+    <!-- Auth -->
+    <string name="welcome_back">Bienvenido de nuevo</string>
+    <string name="email">Correo electrónico</string>
+    <string name="password">Contraseña</string>
+    <string name="continue_button">Continuar</string>
+    <string name="no_account">¿No tienes cuenta? Regístrate</string>
+    <string name="create_account">Crear cuenta</string>
+    <string name="join_ora">Únete a Ora hoy</string>
+    <string name="full_name">Nombre completo</string>
+    <string name="confirm_password">Confirmar contraseña</string>
+    <string name="have_account">¿Ya tienes cuenta? Iniciar sesión</string>
+    <string name="toggle_password_visibility">Mostrar/ocultar contraseña</string>
+    <string name="ora_logo">Logo de Ora</string>
+
+    <!-- Auth Validation -->
+    <string name="passwords_not_match">Las contraseñas no coinciden</string>
+    <string name="invalid_email">Correo electrónico inválido</string>
+    <string name="password_too_short">Contraseña muy corta</string>
+    <string name="email_required">Correo electrónico requerido</string>
+    <string name="password_required">Contraseña requerida</string>
+    <string name="name_required">Nombre requerido</string>
+
+    <!-- Chat -->
+    <string name="how_can_i_help">¿Cómo puedo ayudarte hoy?</string>
+    <string name="ask_anything">Pregúntame lo que quieras</string>
+    <string name="thinking">Pensando</string>
+    <string name="copied_to_clipboard">Copiado al portapapeles</string>
+    <string name="session_deleted">Sesión eliminada</string>
+    <string name="stream_error">Error de transmisión</string>
+    <string name="no_conversations">Sin conversaciones</string>
+    <string name="start_new_chat">Iniciar una nueva conversación</string>
+    <string name="new_conversation">Nueva conversación</string>
+    <string name="search_conversations">Buscar conversaciones</string>
+    <string name="disclaimer">Ora puede cometer errores. Considera verificar la información importante.</string>
+
+    <!-- Chat Actions -->
+    <string name="options">Opciones</string>
+    <string name="attach_file">Adjuntar archivo</string>
+    <string name="add_image">Añadir imagen</string>
+    <string name="send">Enviar</string>
+    <string name="stop">Detener</string>
+    <string name="new_chat">Nueva conversación</string>
+    <string name="menu">Menú</string>
+    <string name="clear">Borrar</string>
+    <string name="selected">Seleccionado</string>
+
+    <!-- Profile -->
+    <string name="back">Atrás</string>
+    <string name="retry">Reintentar</string>
+    <string name="preferences">Preferencias</string>
+    <string name="theme">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="language">Idioma</string>
+    <string name="account">Cuenta</string>
+    <string name="role">Rol</string>
+    <string name="email_status">Estado del correo</string>
+    <string name="verified">Verificado</string>
+    <string name="not_verified">No verificado</string>
+    <string name="sign_out">Cerrar sesión</string>
+    <string name="delete_account">Eliminar cuenta</string>
+    <string name="delete_account_title">Eliminar cuenta</string>
+    <string name="delete_account_message">¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.</string>
+    <string name="delete">Eliminar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="account_deleted">Cuenta eliminada</string>
+    <string name="profile_picture_updated">Foto de perfil actualizada</string>
+    <string name="profile_picture">Foto de perfil</string>
+    <string name="change_photo">Cambiar foto</string>
+    <string name="add_photo">Añadir foto</string>
+    <string name="user">Usuario</string>
+
+    <!-- Attachments -->
+    <string name="file">Archivo</string>
+    <string name="attached_image">Imagen adjunta</string>
+    <string name="attached_file">Archivo adjunto</string>
+    <string name="remove">Eliminar</string>
+
+    <!-- Input Options -->
+    <string name="search_the_web">Buscar en la web</string>
+    <string name="write_code">Escribir código</string>
+    <string name="be_creative">Ser creativo</string>
+    <string name="analyze">Analizar</string>
+
+    <!-- Pill Labels -->
+    <string name="pill_web_search">Búsqueda web</string>
+    <string name="pill_code">Código</string>
+    <string name="pill_creative">Creativo</string>
+    <string name="pill_analysis">Análisis</string>
+
+    <!-- Message Actions -->
+    <string name="like">Me gusta</string>
+    <string name="dislike">No me gusta</string>
+    <string name="copy">Copiar</string>
+    <string name="dismiss">Cerrar</string>
+
+    <!-- Tools -->
+    <string name="parameters">Parámetros</string>
+    <string name="result">Resultado</string>
+    <string name="error">Error</string>
+    <string name="success">Éxito</string>
+    <string name="working">Trabajando…</string>
+    <string name="completed_with_errors">Completado con errores</string>
+    <string name="worked_on_step">Trabajó en %d paso</string>
+    <string name="worked_on_steps">Trabajó en %d pasos</string>
+    <string name="collapse">Contraer</string>
+    <string name="expand">Expandir</string>
+
+    <!-- Errors -->
+    <string name="no_internet">Sin conexión a internet</string>
+    <string name="request_timeout">Tiempo de espera agotado</string>
+    <string name="invalid_credentials">Correo electrónico o contraseña inválidos</string>
+    <string name="session_expired">Sesión expirada, por favor inicia sesión de nuevo</string>
+    <string name="unauthorized">No estás autorizado</string>
+    <string name="verify_email">Por favor verifica tu correo electrónico</string>
+    <string name="invalid_email_format">Formato de correo electrónico inválido</string>
+    <string name="password_min_length">La contraseña debe tener al menos 8 caracteres</string>
+    <string name="field_required">%1$s es requerido</string>
+    <string name="field_too_long">%1$s debe tener como máximo %2$d caracteres</string>
+    <string name="server_error">Error del servidor, por favor intenta de nuevo</string>
+    <string name="rate_limited">Demasiadas solicitudes, por favor espera</string>
+    <string name="session_not_found">Sesión %1$s no encontrada</string>
+    <string name="agent_not_found">Agente %1$s no encontrado</string>
+    <string name="stream_disconnected">Transmisión desconectada</string>
+    <string name="unexpected_error">Se produjo un error inesperado</string>
+</resources>

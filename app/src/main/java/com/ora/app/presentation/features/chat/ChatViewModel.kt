@@ -1,6 +1,7 @@
 package com.ora.app.presentation.features.chat
 
 import androidx.lifecycle.viewModelScope
+import com.ora.app.R
 import com.ora.app.core.error.toUserMessage
 import com.ora.app.domain.model.FeedbackState
 import com.ora.app.domain.model.Interaction
@@ -186,10 +187,10 @@ class ChatViewModel @Inject constructor(
                 if (currentState.activeSessionId == sessionId) {
                     newChat()
                 }
-                sendEffect(ChatEffect.ShowToast("Session deleted", ToastType.Success))
+                sendEffect(ChatEffect.ShowToast(messageResId = R.string.session_deleted, type = ToastType.Success))
             }
             .onError { error ->
-                sendEffect(ChatEffect.ShowToast(error.toUserMessage(), ToastType.Error))
+                sendEffect(ChatEffect.ShowToast(message = error.toUserMessage(), type = ToastType.Error))
             }
     }
 

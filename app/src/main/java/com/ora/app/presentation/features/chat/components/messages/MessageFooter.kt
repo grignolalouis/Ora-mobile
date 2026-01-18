@@ -15,7 +15,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ora.app.R
 import com.ora.app.domain.model.FeedbackState
 import com.ora.app.presentation.designsystem.theme.Dimensions
 import com.ora.app.presentation.designsystem.theme.OraColors
@@ -40,7 +42,7 @@ fun MessageFooter(
                 } else {
                     Icons.Outlined.ThumbUp
                 },
-                contentDescription = "Like",
+                contentDescription = stringResource(R.string.like),
                 modifier = Modifier.size(Dimensions.iconSizeSmall),
                 tint = if (feedbackState == FeedbackState.POSITIVE) {
                     OraColors.Success
@@ -63,7 +65,7 @@ fun MessageFooter(
                 } else {
                     Icons.Outlined.ThumbDown
                 },
-                contentDescription = "Dislike",
+                contentDescription = stringResource(R.string.dislike),
                 modifier = Modifier.size(Dimensions.iconSizeSmall),
                 tint = if (feedbackState == FeedbackState.NEGATIVE) {
                     MaterialTheme.colorScheme.error
@@ -82,7 +84,7 @@ fun MessageFooter(
         ) {
             Icon(
                 imageVector = Icons.Default.ContentCopy,
-                contentDescription = "Copy",
+                contentDescription = stringResource(R.string.copy),
                 modifier = Modifier.size(Dimensions.iconSizeSmall),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

@@ -36,8 +36,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.ora.app.R
 import com.ora.app.presentation.designsystem.theme.Dimensions
 import com.ora.app.presentation.designsystem.theme.OraColors
 import kotlinx.coroutines.delay
@@ -157,7 +159,7 @@ private fun ToastContent(
             ) {
                 Icon(
                     imageVector = Icons.Rounded.Close,
-                    contentDescription = "Dismiss",
+                    contentDescription = stringResource(R.string.dismiss),
                     tint = colors.content.copy(alpha = 0.6f),
                     modifier = Modifier.size(Dimensions.iconSizeSm)
                 )

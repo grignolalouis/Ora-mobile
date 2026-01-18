@@ -35,6 +35,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.ora.app.R
 import androidx.compose.ui.text.input.ImeAction
@@ -92,12 +93,12 @@ fun RegisterScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_ora_logo),
-                    contentDescription = "Ora Logo",
+                    contentDescription = stringResource(R.string.ora_logo),
                     modifier = Modifier.size(40.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
                 Text(
-                    text = "Ora",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.headlineLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -108,7 +109,7 @@ fun RegisterScreen(
 
             // Header
             Text(
-                text = "Create account",
+                text = stringResource(R.string.create_account),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -117,7 +118,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(Dimensions.spacing4))
 
             Text(
-                text = "Join Ora today",
+                text = stringResource(R.string.join_ora),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -132,10 +133,10 @@ fun RegisterScreen(
                 OraTextField(
                     value = state.name,
                     onValueChange = { viewModel.dispatch(AuthIntent.UpdateName(it)) },
-                    placeholder = "Full name",
+                    placeholder = stringResource(R.string.full_name),
                     label = null,
                     isError = state.nameError != null,
-                    errorMessage = state.nameError,
+                    errorMessage = state.nameError?.let { stringResource(it) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next
@@ -148,10 +149,10 @@ fun RegisterScreen(
                 OraTextField(
                     value = state.email,
                     onValueChange = { viewModel.dispatch(AuthIntent.UpdateEmail(it)) },
-                    placeholder = "Email",
+                    placeholder = stringResource(R.string.email),
                     label = null,
                     isError = state.emailError != null,
-                    errorMessage = state.emailError,
+                    errorMessage = state.emailError?.let { stringResource(it) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
@@ -164,7 +165,7 @@ fun RegisterScreen(
                 OraTextField(
                     value = state.password,
                     onValueChange = { viewModel.dispatch(AuthIntent.UpdatePassword(it)) },
-                    placeholder = "Password",
+                    placeholder = stringResource(R.string.password),
                     label = null,
                     trailingIcon = {
                         IconButton(
@@ -176,13 +177,13 @@ fun RegisterScreen(
                                 } else {
                                     Icons.Outlined.Visibility
                                 },
-                                contentDescription = "Toggle password visibility",
+                                contentDescription = stringResource(R.string.toggle_password_visibility),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     },
                     isError = state.passwordError != null,
-                    errorMessage = state.passwordError,
+                    errorMessage = state.passwordError?.let { stringResource(it) },
                     visualTransformation = if (state.isPasswordVisible) {
                         VisualTransformation.None
                     } else {
@@ -200,10 +201,10 @@ fun RegisterScreen(
                 OraTextField(
                     value = state.confirmPassword,
                     onValueChange = { viewModel.dispatch(AuthIntent.UpdateConfirmPassword(it)) },
-                    placeholder = "Confirm password",
+                    placeholder = stringResource(R.string.confirm_password),
                     label = null,
                     isError = state.confirmPasswordError != null,
-                    errorMessage = state.confirmPasswordError,
+                    errorMessage = state.confirmPasswordError?.let { stringResource(it) },
                     visualTransformation = if (state.isPasswordVisible) {
                         VisualTransformation.None
                     } else {
@@ -227,7 +228,7 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(Dimensions.spacing32))
 
             OraButton(
-                text = "Create account",
+                text = stringResource(R.string.create_account),
                 onClick = { viewModel.dispatch(AuthIntent.Register) },
                 enabled = state.isRegisterValid && !state.isLoading,
                 loading = state.isLoading,
@@ -238,7 +239,7 @@ fun RegisterScreen(
 
             // Footer
             OraTextButton(
-                text = "Already have an account? Sign in",
+                text = stringResource(R.string.have_account),
                 onClick = onNavigateToLogin,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

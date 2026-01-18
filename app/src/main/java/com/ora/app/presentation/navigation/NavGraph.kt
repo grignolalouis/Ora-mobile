@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.ora.app.core.session.AuthEvent
 import com.ora.app.core.session.AuthEventBus
+import com.ora.app.core.storage.LanguagePreferences
 import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.core.storage.TokenManager
 import com.ora.app.presentation.features.auth.LoginScreen
@@ -20,7 +21,9 @@ import com.ora.app.presentation.features.profile.UserProfileScreen
 fun NavGraph(
     navController: NavHostController,
     tokenManager: TokenManager,
-    themePreferences: ThemePreferences
+    themePreferences: ThemePreferences,
+    languagePreferences: LanguagePreferences,
+    onLanguageChanged: () -> Unit
 ) {
     // LG: Écouter les événements de session expirée
     LaunchedEffect(Unit) {
@@ -90,7 +93,9 @@ fun NavGraph(
                         popUpTo(0) { inclusive = true }
                     }
                 },
-                themePreferences = themePreferences
+                themePreferences = themePreferences,
+                languagePreferences = languagePreferences,
+                onLanguageChanged = onLanguageChanged
             )
         }
 

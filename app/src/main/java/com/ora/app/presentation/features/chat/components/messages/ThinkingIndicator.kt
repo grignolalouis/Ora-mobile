@@ -12,8 +12,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import com.ora.app.R
 
 @Composable
 fun ThinkingIndicator(modifier: Modifier = Modifier) {
@@ -42,7 +44,7 @@ fun ThinkingIndicator(modifier: Modifier = Modifier) {
     )
 
     Text(
-        text = "Thinking",
+        text = stringResource(R.string.thinking),
         modifier = modifier,
         style = TextStyle(
             brush = shimmerBrush,

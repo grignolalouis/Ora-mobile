@@ -1,6 +1,7 @@
 package com.ora.app.core.di
 
 import android.content.Context
+import com.ora.app.core.storage.LanguagePreferences
 import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.core.storage.TokenManager
 import dagger.Module
@@ -24,5 +25,11 @@ object AppModule {
     @Singleton
     fun provideThemePreferences(@ApplicationContext context: Context): ThemePreferences {
         return ThemePreferences(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideLanguagePreferences(@ApplicationContext context: Context): LanguagePreferences {
+        return LanguagePreferences(context)
     }
 }

@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -100,7 +101,7 @@ fun ChatTopBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Menu,
-                contentDescription = "Menu",
+                contentDescription = stringResource(R.string.menu),
                 modifier = Modifier.size(26.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
@@ -223,7 +224,7 @@ fun ChatTopBar(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Add,
-                contentDescription = "New chat",
+                contentDescription = stringResource(R.string.new_chat),
                 modifier = Modifier.size(26.dp),
                 tint = MaterialTheme.colorScheme.onSurface
             )
@@ -293,7 +294,7 @@ private fun AgentMenuItem(
             Spacer(modifier = Modifier.width(Dimensions.spacing12))
             Icon(
                 imageVector = Icons.Outlined.Check,
-                contentDescription = "Selected",
+                contentDescription = stringResource(R.string.selected),
                 modifier = Modifier.size(18.dp),
                 tint = OraTheme.colors.accent
             )

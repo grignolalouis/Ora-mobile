@@ -1,5 +1,6 @@
 package com.ora.app.presentation.features.auth
 
+import androidx.annotation.StringRes
 import com.ora.app.presentation.mvi.UiState
 
 data class AuthState(
@@ -8,10 +9,10 @@ data class AuthState(
     val name: String = "",
     val confirmPassword: String = "",
     val isLoading: Boolean = false,
-    val emailError: String? = null,
-    val passwordError: String? = null,
-    val nameError: String? = null,
-    val confirmPasswordError: String? = null,
+    @StringRes val emailError: Int? = null,
+    @StringRes val passwordError: Int? = null,
+    @StringRes val nameError: Int? = null,
+    @StringRes val confirmPasswordError: Int? = null,
     val isPasswordVisible: Boolean = false
 ) : UiState {
 

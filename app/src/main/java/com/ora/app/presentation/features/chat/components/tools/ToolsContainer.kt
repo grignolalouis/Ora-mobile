@@ -47,9 +47,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ora.app.R
 import com.ora.app.domain.model.ToolCall
 import com.ora.app.domain.model.ToolStatus
 import com.ora.app.presentation.designsystem.theme.OraColors
@@ -98,11 +100,16 @@ fun ToolsContainer(
             Spacer(modifier = Modifier.width(12.dp))
 
             // Title
+            val stepsText = if (toolCalls.size > 1) {
+                stringResource(R.string.worked_on_steps, toolCalls.size)
+            } else {
+                stringResource(R.string.worked_on_step, toolCalls.size)
+            }
             Text(
                 text = when {
-                    hasRunning -> "Working..."
-                    hasError -> "Completed with errors"
-                    else -> "Worked on ${toolCalls.size} step${if (toolCalls.size > 1) "s" else ""}"
+                    hasRunning -> stringResource(R.string.working)
+                    hasError -> stringResource(R.string.completed_with_errors)
+                    else -> stepsText
                 },
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.Medium,
@@ -113,7 +120,7 @@ fun ToolsContainer(
             // Chevron
             Icon(
                 imageVector = Icons.Rounded.KeyboardArrowDown,
-                contentDescription = if (isExpanded) "Collapse" else "Expand",
+                contentDescription = if (isExpanded) stringResource(R.string.collapse) else stringResource(R.string.expand),
                 modifier = Modifier
                     .size(20.dp)
                     .rotate(chevronRotation),
@@ -298,7 +305,7 @@ private fun ToolStep(
                     // Arguments
                     if (toolCall.arguments.isNotEmpty()) {
                         ParametersSection(
-                            title = "Parameters",
+                            title = stringResource(R.string.parameters),
                             entries = toolCall.arguments.map { (k, v) -> k to v.toString() }
                         )
                     }
@@ -306,7 +313,7 @@ private fun ToolStep(
                     // Result
                     toolCall.result?.let { result ->
                         ResultSection(
-                            title = "Result",
+                            title = stringResource(R.string.result),
                             content = result,
                             isError = false
                         )
@@ -315,7 +322,7 @@ private fun ToolStep(
                     // Error
                     toolCall.error?.let { error ->
                         ResultSection(
-                            title = "Error",
+                            title = stringResource(R.string.error),
                             content = error,
                             isError = true
                         )
@@ -349,7 +356,7 @@ private fun StepStatus(
             ToolStatus.SUCCESS -> {
                 Icon(
                     imageVector = Icons.Rounded.Check,
-                    contentDescription = "Success",
+                    contentDescription = stringResource(R.string.success),
                     modifier = Modifier.size(16.dp),
                     tint = OraColors.Success
                 )
@@ -357,7 +364,7 @@ private fun StepStatus(
             ToolStatus.ERROR -> {
                 Icon(
                     imageVector = Icons.Rounded.Close,
-                    contentDescription = "Error",
+                    contentDescription = stringResource(R.string.error),
                     modifier = Modifier.size(16.dp),
                     tint = OraColors.Error
                 )

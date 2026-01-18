@@ -46,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -122,13 +123,13 @@ fun SessionDrawer(
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.ic_ora_logo),
-                        contentDescription = "Ora",
+                        contentDescription = stringResource(R.string.ora_logo),
                         modifier = Modifier.size(28.dp),
                         colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                     )
                     Spacer(modifier = Modifier.width(Dimensions.spacing10))
                     Text(
-                        text = "Ora",
+                        text = stringResource(R.string.app_name),
                         style = MaterialTheme.typography.titleLarge.copy(
                             fontWeight = FontWeight.Bold,
                             fontSize = 22.sp
@@ -195,13 +196,13 @@ fun SessionDrawer(
                                         horizontalAlignment = Alignment.CenterHorizontally
                                     ) {
                                         Text(
-                                            text = "No conversations yet",
+                                            text = stringResource(R.string.no_conversations),
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                         Spacer(modifier = Modifier.height(Dimensions.spacing4))
                                         Text(
-                                            text = "Start a new chat",
+                                            text = stringResource(R.string.start_new_chat),
                                             style = MaterialTheme.typography.bodySmall,
                                             color = OraTheme.colors.textTertiary
                                         )
@@ -251,7 +252,7 @@ private fun UserProfileSection(
 
         // Name
         Text(
-            text = userName ?: "User",
+            text = userName ?: stringResource(R.string.user),
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Medium,
             color = MaterialTheme.colorScheme.onSurface,
@@ -295,13 +296,13 @@ private fun UserAvatar(
         if (profilePictureUrl != null) {
             AsyncImage(
                 model = profilePictureUrl,
-                contentDescription = "Profile picture",
+                contentDescription = stringResource(R.string.profile_picture),
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
         } else {
             Text(
-                text = getInitials(name ?: "User"),
+                text = getInitials(name ?: stringResource(R.string.user)),
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White

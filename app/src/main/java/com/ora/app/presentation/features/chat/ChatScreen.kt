@@ -22,6 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.ora.app.R
 import com.ora.app.domain.model.FeedbackState
 import com.ora.app.presentation.designsystem.components.toast.ToastManager
 import com.ora.app.presentation.designsystem.components.toast.ToastType
@@ -88,14 +90,17 @@ fun ChatScreen(
                 is ChatEffect.CopiedToClipboard -> {
                     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                     clipboard.setPrimaryClip(ClipData.newPlainText("message", effect.message))
-                    ToastManager.success("Copied to clipboard")
+                    ToastManager.success(context.getString(R.string.copied_to_clipboard))
                 }
                 is ChatEffect.ShowToast -> {
+                    val toastMessage = effect.messageResId?.let { context.getString(it) }
+                        ?: effect.message
+                        ?: return@collect
                     when (effect.type) {
-                        ToastType.Success -> ToastManager.success(effect.message)
-                        ToastType.Error -> ToastManager.error(effect.message)
-                        ToastType.Warning -> ToastManager.warning(effect.message)
-                        ToastType.Info -> ToastManager.info(effect.message)
+                        ToastType.Success -> ToastManager.success(toastMessage)
+                        ToastType.Error -> ToastManager.error(toastMessage)
+                        ToastType.Warning -> ToastManager.warning(toastMessage)
+                        ToastType.Info -> ToastManager.info(toastMessage)
                     }
                 }
                 ChatEffect.NavigateToLogin -> onLogout()

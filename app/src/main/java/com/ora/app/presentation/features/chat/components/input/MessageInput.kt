@@ -49,9 +49,11 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ora.app.R
 import com.ora.app.presentation.designsystem.theme.Dimensions
 import com.ora.app.presentation.designsystem.theme.OraColors
 import com.ora.app.presentation.designsystem.theme.OraTheme
@@ -77,6 +79,9 @@ fun MessageInput(
     // Attachments state
     val attachments = remember { mutableStateListOf<Attachment>() }
 
+    // Localized strings for use in callbacks
+    val fileLabel = stringResource(R.string.file)
+
     // File picker launcher
     val filePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
@@ -86,7 +91,7 @@ fun MessageInput(
                 Attachment(
                     uri = it,
                     type = AttachmentType.FILE,
-                    name = "File"
+                    name = fileLabel
                 )
             )
         }
@@ -185,7 +190,7 @@ fun MessageInput(
                         Box {
                             if (value.isEmpty()) {
                                 Text(
-                                    text = "How can I help you today?",
+                                    text = stringResource(R.string.how_can_i_help),
                                     style = MaterialTheme.typography.bodyLarge.copy(
                                         fontSize = 16.sp
                                     ),
@@ -214,7 +219,7 @@ fun MessageInput(
                         Box {
                             InputIconButton(
                                 icon = Icons.Outlined.Add,
-                                contentDescription = "Options",
+                                contentDescription = stringResource(R.string.options),
                                 onClick = { showOptionsMenu = true }
                             )
 
@@ -234,14 +239,14 @@ fun MessageInput(
                         // File attachment button (paperclip)
                         InputIconButton(
                             icon = Icons.Outlined.AttachFile,
-                            contentDescription = "Attach file",
+                            contentDescription = stringResource(R.string.attach_file),
                             onClick = { filePickerLauncher.launch("*/*") }
                         )
 
                         // Image picker button
                         InputIconButton(
                             icon = Icons.Outlined.Image,
-                            contentDescription = "Add image",
+                            contentDescription = stringResource(R.string.add_image),
                             onClick = { imagePickerLauncher.launch("image/*") }
                         )
                     }
@@ -266,7 +271,7 @@ fun MessageInput(
 
         // Disclaimer text
         Text(
-            text = "Ora can make mistakes. Consider checking important info.",
+            text = stringResource(R.string.disclaimer),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 11.sp
             ),
@@ -380,7 +385,7 @@ private fun SendButton(
     ) {
         Icon(
             imageVector = Icons.Rounded.ArrowUpward,
-            contentDescription = "Send",
+            contentDescription = stringResource(R.string.send),
             modifier = Modifier.size(20.dp),
             tint = iconColor
         )
@@ -413,7 +418,7 @@ private fun StopButton(onClick: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Rounded.Stop,
-            contentDescription = "Stop",
+            contentDescription = stringResource(R.string.stop),
             modifier = Modifier.size(18.dp),
             tint = OraColors.White
         )

@@ -1,3 +1,130 @@
 <resources>
     <string name="app_name">Ora</string>
+
+    <!-- Auth -->
+    <string name="welcome_back">Welcome back</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="continue_button">Continue</string>
+    <string name="no_account">Don\'t have an account? Sign up</string>
+    <string name="create_account">Create account</string>
+    <string name="join_ora">Join Ora today</string>
+    <string name="full_name">Full name</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="have_account">Already have an account? Sign in</string>
+    <string name="toggle_password_visibility">Toggle password visibility</string>
+    <string name="ora_logo">Ora Logo</string>
+
+    <!-- Auth Validation -->
+    <string name="passwords_not_match">Passwords do not match</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="password_too_short">Password too short</string>
+    <string name="email_required">Email required</string>
+    <string name="password_required">Password required</string>
+    <string name="name_required">Name required</string>
+
+    <!-- Chat -->
+    <string name="how_can_i_help">How can I help you today?</string>
+    <string name="ask_anything">Ask me anything</string>
+    <string name="thinking">Thinking</string>
+    <string name="copied_to_clipboard">Copied to clipboard</string>
+    <string name="session_deleted">Session deleted</string>
+    <string name="stream_error">Stream error</string>
+    <string name="no_conversations">No conversations yet</string>
+    <string name="start_new_chat">Start a new chat</string>
+    <string name="new_conversation">New conversation</string>
+    <string name="search_conversations">Search conversations</string>
+    <string name="disclaimer">Ora can make mistakes. Consider checking important info.</string>
+
+    <!-- Chat Actions -->
+    <string name="options">Options</string>
+    <string name="attach_file">Attach file</string>
+    <string name="add_image">Add image</string>
+    <string name="send">Send</string>
+    <string name="stop">Stop</string>
+    <string name="new_chat">New chat</string>
+    <string name="menu">Menu</string>
+    <string name="clear">Clear</string>
+    <string name="selected">Selected</string>
+
+    <!-- Profile -->
+    <string name="back">Back</string>
+    <string name="retry">Retry</string>
+    <string name="preferences">Preferences</string>
+    <string name="theme">Theme</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="language">Language</string>
+    <string name="account">Account</string>
+    <string name="role">Role</string>
+    <string name="email_status">Email status</string>
+    <string name="verified">Verified</string>
+    <string name="not_verified">Not verified</string>
+    <string name="sign_out">Sign out</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_title">Delete Account</string>
+    <string name="delete_account_message">Are you sure you want to delete your account? This action cannot be undone.</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="account_deleted">Account deleted</string>
+    <string name="profile_picture_updated">Profile picture updated</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="change_photo">Change photo</string>
+    <string name="add_photo">Add photo</string>
+    <string name="user">User</string>
+
+    <!-- Attachments -->
+    <string name="file">File</string>
+    <string name="attached_image">Attached image</string>
+    <string name="attached_file">Attached file</string>
+    <string name="remove">Remove</string>
+
+    <!-- Input Options -->
+    <string name="search_the_web">Search the web</string>
+    <string name="write_code">Write code</string>
+    <string name="be_creative">Be creative</string>
+    <string name="analyze">Analyze</string>
+
+    <!-- Pill Labels -->
+    <string name="pill_web_search">Web Search</string>
+    <string name="pill_code">Code</string>
+    <string name="pill_creative">Creative</string>
+    <string name="pill_analysis">Analysis</string>
+
+    <!-- Message Actions -->
+    <string name="like">Like</string>
+    <string name="dislike">Dislike</string>
+    <string name="copy">Copy</string>
+    <string name="dismiss">Dismiss</string>
+
+    <!-- Tools -->
+    <string name="parameters">Parameters</string>
+    <string name="result">Result</string>
+    <string name="error">Error</string>
+    <string name="success">Success</string>
+    <string name="working">Working…</string>
+    <string name="completed_with_errors">Completed with errors</string>
+    <string name="worked_on_step">Worked on %d step</string>
+    <string name="worked_on_steps">Worked on %d steps</string>
+    <string name="collapse">Collapse</string>
+    <string name="expand">Expand</string>
+
+    <!-- Errors -->
+    <string name="no_internet">No internet connection</string>
+    <string name="request_timeout">Request timed out</string>
+    <string name="invalid_credentials">Invalid email or password</string>
+    <string name="session_expired">Session expired, please login again</string>
+    <string name="unauthorized">You are not authorized</string>
+    <string name="verify_email">Please verify your email</string>
+    <string name="invalid_email_format">Invalid email format</string>
+    <string name="password_min_length">Password must be at least 8 characters</string>
+    <string name="field_required">%1$s is required</string>
+    <string name="field_too_long">%1$s must be at most %2$d characters</string>
+    <string name="server_error">Server error, please try again</string>
+    <string name="rate_limited">Too many requests, please wait</string>
+    <string name="session_not_found">Session %1$s not found</string>
+    <string name="agent_not_found">Agent %1$s not found</string>
+    <string name="stream_disconnected">Stream disconnected</string>
+    <string name="unexpected_error">An unexpected error occurred</string>
 </resources>

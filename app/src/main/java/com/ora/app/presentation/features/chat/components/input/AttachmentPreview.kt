@@ -33,8 +33,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.ora.app.R
 import com.ora.app.presentation.designsystem.theme.OraColors
 import com.ora.app.presentation.designsystem.theme.OraTheme
 import java.util.UUID
@@ -123,7 +125,7 @@ private fun AttachmentThumbnail(
                 AttachmentType.IMAGE -> {
                     AsyncImage(
                         model = attachment.uri,
-                        contentDescription = "Attached image",
+                        contentDescription = stringResource(R.string.attached_image),
                         modifier = Modifier
                             .fillMaxSize()
                             .clip(RoundedCornerShape(12.dp)),
@@ -133,7 +135,7 @@ private fun AttachmentThumbnail(
                 AttachmentType.FILE -> {
                     Icon(
                         imageVector = Icons.Outlined.Description,
-                        contentDescription = "Attached file",
+                        contentDescription = stringResource(R.string.attached_file),
                         modifier = Modifier.size(24.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -162,7 +164,7 @@ private fun AttachmentThumbnail(
         ) {
             Icon(
                 imageVector = Icons.Outlined.Close,
-                contentDescription = "Remove",
+                contentDescription = stringResource(R.string.remove),
                 modifier = Modifier.size(12.dp),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )

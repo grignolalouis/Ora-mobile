@@ -37,8 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.ora.app.R
 import com.ora.app.domain.model.Session
 import com.ora.app.presentation.designsystem.theme.Dimensions
 import com.ora.app.presentation.designsystem.theme.OraColors
@@ -122,7 +124,7 @@ fun SessionItem(
             }
 
             Text(
-                text = session.title ?: "New conversation",
+                text = session.title ?: stringResource(R.string.new_conversation),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontWeight = if (isSelected) FontWeight.Medium else FontWeight.Normal,
                     fontSize = 15.sp
@@ -190,7 +192,7 @@ private fun SessionContextMenu(
                     )
                     Spacer(modifier = Modifier.width(Dimensions.spacing12))
                     Text(
-                        text = "Delete",
+                        text = stringResource(R.string.delete),
                         style = MaterialTheme.typography.bodyMedium.copy(
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp

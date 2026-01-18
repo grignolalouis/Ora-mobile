@@ -28,21 +28,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ora.app.R
 import java.util.UUID
 
 // ============================================================================
 // Pill Types & Colors
 // ============================================================================
 
-enum class PillType(val label: String, val color: Color) {
-    WEB_SEARCH("Web Search", Color(0xFF3B82F6)),   // Blue
-    CODE("Code", Color(0xFF10B981)),                // Green
-    CREATIVE("Creative", Color(0xFF8B5CF6)),        // Purple
-    ANALYSIS("Analysis", Color(0xFFF59E0B))         // Orange
+enum class PillType(@StringRes val labelResId: Int, val color: Color) {
+    WEB_SEARCH(R.string.pill_web_search, Color(0xFF3B82F6)),   // Blue
+    CODE(R.string.pill_code, Color(0xFF10B981)),                // Green
+    CREATIVE(R.string.pill_creative, Color(0xFF8B5CF6)),        // Purple
+    ANALYSIS(R.string.pill_analysis, Color(0xFFF59E0B))         // Orange
 }
 
 data class InputPill(
@@ -86,7 +89,7 @@ fun PillChip(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = pill.type.label,
+            text = stringResource(pill.type.labelResId),
             style = MaterialTheme.typography.labelMedium.copy(
                 fontWeight = FontWeight.Medium,
                 fontSize = 13.sp
@@ -98,7 +101,7 @@ fun PillChip(
 
         Icon(
             imageVector = Icons.Rounded.Close,
-            contentDescription = "Remove",
+            contentDescription = stringResource(R.string.remove),
             modifier = Modifier
                 .size(16.dp)
                 .clip(RoundedCornerShape(4.dp))

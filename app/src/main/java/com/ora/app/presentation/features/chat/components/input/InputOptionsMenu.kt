@@ -37,10 +37,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
+import com.ora.app.R
 import androidx.compose.ui.window.PopupProperties
 import com.ora.app.presentation.designsystem.theme.Dimensions
 import com.ora.app.presentation.designsystem.theme.OraTheme
@@ -94,7 +96,7 @@ fun InputOptionsMenu(
                     ) {
                         MenuOptionItem(
                             icon = Icons.Outlined.Search,
-                            label = "Search the web",
+                            label = stringResource(R.string.search_the_web),
                             onClick = {
                                 onAddPill(PillType.WEB_SEARCH)
                                 onDismiss()
@@ -103,7 +105,7 @@ fun InputOptionsMenu(
 
                         MenuOptionItem(
                             icon = Icons.Outlined.Code,
-                            label = "Write code",
+                            label = stringResource(R.string.write_code),
                             onClick = {
                                 onAddPill(PillType.CODE)
                                 onDismiss()
@@ -112,7 +114,7 @@ fun InputOptionsMenu(
 
                         MenuOptionItem(
                             icon = Icons.Outlined.AutoAwesome,
-                            label = "Be creative",
+                            label = stringResource(R.string.be_creative),
                             onClick = {
                                 onAddPill(PillType.CREATIVE)
                                 onDismiss()
@@ -121,7 +123,7 @@ fun InputOptionsMenu(
 
                         MenuOptionItem(
                             icon = Icons.Outlined.Analytics,
-                            label = "Analyze",
+                            label = stringResource(R.string.analyze),
                             onClick = {
                                 onAddPill(PillType.ANALYSIS)
                                 onDismiss()

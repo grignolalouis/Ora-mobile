@@ -1,5 +1,6 @@
 package com.ora.app.presentation.features.profile
 
+import com.ora.app.R
 import com.ora.app.core.error.toUserMessage
 import com.ora.app.domain.usecase.auth.DeleteAccountUseCase
 import com.ora.app.domain.usecase.auth.GetCurrentUserUseCase
@@ -58,7 +59,7 @@ class UserProfileViewModel @Inject constructor(
 
         deleteAccountUseCase()
             .onSuccess {
-                sendEffect(UserProfileEffect.ShowToast("Account deleted"))
+                sendEffect(UserProfileEffect.ShowToast(messageResId = R.string.account_deleted))
                 sendEffect(UserProfileEffect.NavigateToLogin)
             }
             .onError { error ->
@@ -80,7 +81,7 @@ class UserProfileViewModel @Inject constructor(
         contentType: String,
         fileBytes: ByteArray
     ) {
-        val userId = state.value.user?.id ?: return
+        val userId = currentState.user?.id ?: return
         setState { copy(isUploadingPicture = true) }
 
         uploadProfilePictureUseCase(userId, fileName, contentType, fileBytes)
@@ -90,11 +91,11 @@ class UserProfileViewModel @Inject constructor(
                     isUploadingPicture = false,
                     user = user?.copy(profilePictureUrl = newUrl)
                 )}
-                sendEffect(UserProfileEffect.ShowToast("Profile picture updated"))
+                sendEffect(UserProfileEffect.ShowToast(messageResId = R.string.profile_picture_updated))
             }
             .onError { error ->
                 setState { copy(isUploadingPicture = false) }
-                sendEffect(UserProfileEffect.ShowToast(error.toUserMessage()))
+                sendEffect(UserProfileEffect.ShowToast(message = error.toUserMessage()))
             }
     }
 }

@@ -29,7 +29,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.ora.app.R
 import com.ora.app.presentation.designsystem.theme.Dimensions
 
 @Composable
@@ -37,7 +39,7 @@ fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search conversations"
+    placeholder: String? = null
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
@@ -95,7 +97,7 @@ fun SearchBar(
                 ) {
                     if (query.isEmpty()) {
                         Text(
-                            text = placeholder,
+                            text = placeholder ?: stringResource(R.string.search_conversations),
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                         )
@@ -110,7 +112,7 @@ fun SearchBar(
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Close,
-                            contentDescription = "Clear",
+                            contentDescription = stringResource(R.string.clear),
                             modifier = Modifier.size(16.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                         )

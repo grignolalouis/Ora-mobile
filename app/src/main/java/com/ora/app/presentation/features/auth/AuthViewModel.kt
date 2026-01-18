@@ -1,5 +1,6 @@
 package com.ora.app.presentation.features.auth
 
+import com.ora.app.R
 import com.ora.app.core.error.AppError
 import com.ora.app.core.error.toUserMessage
 import com.ora.app.domain.usecase.auth.LoginUseCase
@@ -41,7 +42,7 @@ class AuthViewModel @Inject constructor(
 
     private fun updateConfirmPassword(confirmPassword: String) {
         val error = if (confirmPassword.isNotEmpty() && confirmPassword != currentState.password) {
-            "Passwords do not match"
+            R.string.passwords_not_match
         } else null
         setState { copy(confirmPassword = confirmPassword, confirmPasswordError = error) }
     }
@@ -66,7 +67,7 @@ class AuthViewModel @Inject constructor(
 
     private suspend fun register() {
         if (currentState.password != currentState.confirmPassword) {
-            setState { copy(confirmPasswordError = "Passwords do not match") }
+            setState { copy(confirmPasswordError = R.string.passwords_not_match) }
             return
         }
 
@@ -85,13 +86,13 @@ class AuthViewModel @Inject constructor(
 
     private fun handleError(error: AppError) {
         when (error) {
-            is AppError.Validation.InvalidEmail -> setState { copy(emailError = "Invalid email") }
-            is AppError.Validation.InvalidPassword -> setState { copy(passwordError = "Password too short") }
+            is AppError.Validation.InvalidEmail -> setState { copy(emailError = R.string.invalid_email) }
+            is AppError.Validation.InvalidPassword -> setState { copy(passwordError = R.string.password_too_short) }
             is AppError.Validation.FieldRequired -> {
                 when (error.field) {
-                    "Email" -> setState { copy(emailError = "Email required") }
-                    "Password" -> setState { copy(passwordError = "Password required") }
-                    "Name" -> setState { copy(nameError = "Name required") }
+                    "Email" -> setState { copy(emailError = R.string.email_required) }
+                    "Password" -> setState { copy(passwordError = R.string.password_required) }
+                    "Name" -> setState { copy(nameError = R.string.name_required) }
                     else -> sendEffect(AuthEffect.ShowError(error.toUserMessage()))
                 }
             }

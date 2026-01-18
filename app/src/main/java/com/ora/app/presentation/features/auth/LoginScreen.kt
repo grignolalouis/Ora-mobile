@@ -38,6 +38,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import com.ora.app.R
 import androidx.compose.ui.text.input.ImeAction
@@ -95,12 +96,12 @@ fun LoginScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_ora_logo),
-                    contentDescription = "Ora Logo",
+                    contentDescription = stringResource(R.string.ora_logo),
                     modifier = Modifier.size(52.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onBackground)
                 )
                 Text(
-                    text = "Ora",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.displayLarge,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground
@@ -110,7 +111,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(Dimensions.spacing12))
 
             Text(
-                text = "Welcome back",
+                text = stringResource(R.string.welcome_back),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -125,10 +126,10 @@ fun LoginScreen(
                 OraTextField(
                     value = state.email,
                     onValueChange = { viewModel.dispatch(AuthIntent.UpdateEmail(it)) },
-                    placeholder = "Email",
+                    placeholder = stringResource(R.string.email),
                     label = null,
                     isError = state.emailError != null,
-                    errorMessage = state.emailError,
+                    errorMessage = state.emailError?.let { stringResource(it) },
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next
@@ -141,7 +142,7 @@ fun LoginScreen(
                 OraTextField(
                     value = state.password,
                     onValueChange = { viewModel.dispatch(AuthIntent.UpdatePassword(it)) },
-                    placeholder = "Password",
+                    placeholder = stringResource(R.string.password),
                     label = null,
                     trailingIcon = {
                         IconButton(
@@ -153,13 +154,13 @@ fun LoginScreen(
                                 } else {
                                     Icons.Outlined.Visibility
                                 },
-                                contentDescription = "Toggle password visibility",
+                                contentDescription = stringResource(R.string.toggle_password_visibility),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     },
                     isError = state.passwordError != null,
-                    errorMessage = state.passwordError,
+                    errorMessage = state.passwordError?.let { stringResource(it) },
                     visualTransformation = if (state.isPasswordVisible) {
                         VisualTransformation.None
                     } else {
@@ -183,7 +184,7 @@ fun LoginScreen(
             Spacer(modifier = Modifier.height(Dimensions.spacing32))
 
             OraButton(
-                text = "Continue",
+                text = stringResource(R.string.continue_button),
                 onClick = { viewModel.dispatch(AuthIntent.Login) },
                 enabled = state.isLoginValid && !state.isLoading,
                 loading = state.isLoading,
@@ -194,7 +195,7 @@ fun LoginScreen(
 
             // Footer
             OraTextButton(
-                text = "Don't have an account? Sign up",
+                text = stringResource(R.string.no_account),
                 onClick = onNavigateToRegister,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

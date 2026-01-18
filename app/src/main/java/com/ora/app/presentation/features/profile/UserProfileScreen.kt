@@ -47,10 +47,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.ora.app.R
+import com.ora.app.core.storage.Language
+import com.ora.app.core.storage.LanguagePreferences
 import com.ora.app.core.storage.ThemeMode
 import com.ora.app.core.storage.ThemePreferences
 import com.ora.app.domain.model.User
@@ -68,6 +72,8 @@ fun UserProfileScreen(
     onNavigateBack: () -> Unit,
     onLogout: () -> Unit,
     themePreferences: ThemePreferences,
+    languagePreferences: LanguagePreferences,
+    onLanguageChanged: () -> Unit,
     viewModel: UserProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -103,7 +109,10 @@ fun UserProfileScreen(
             when (effect) {
                 UserProfileEffect.NavigateToLogin -> onLogout()
                 is UserProfileEffect.ShowToast -> {
-                    ToastManager.info(effect.message)
+                    val message = effect.messageResId?.let { context.getString(it) }
+                        ?: effect.message
+                        ?: return@collect
+                    ToastManager.info(message)
                 }
             }
         }
@@ -143,7 +152,9 @@ fun UserProfileScreen(
                         onAvatarClick = { imagePicker.launch("image/*") },
                         onLogout = { viewModel.dispatch(UserProfileIntent.Logout) },
                         onDeleteAccount = { viewModel.dispatch(UserProfileIntent.ShowDeleteConfirmation) },
-                        themePreferences = themePreferences
+                        themePreferences = themePreferences,
+                        languagePreferences = languagePreferences,
+                        onLanguageChanged = onLanguageChanged
                     )
                 }
             }
@@ -162,7 +173,7 @@ private fun TopBar(onBackClick: () -> Unit) {
         IconButton(onClick = onBackClick) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = stringResource(R.string.back),
                 tint = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -185,7 +196,7 @@ private fun ErrorState(error: String, onRetry: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(16.dp))
         OraButton(
-            text = "Retry",
+            text = stringResource(R.string.retry),
             onClick = onRetry,
             style = OraButtonStyle.Secondary
         )
@@ -199,9 +210,12 @@ private fun ProfileContent(
     onAvatarClick: () -> Unit,
     onLogout: () -> Unit,
     onDeleteAccount: () -> Unit,
-    themePreferences: ThemePreferences
+    themePreferences: ThemePreferences,
+    languagePreferences: LanguagePreferences,
+    onLanguageChanged: () -> Unit
 ) {
     val themeMode by themePreferences.themeMode.collectAsState(initial = ThemeMode.SYSTEM)
+    val language by languagePreferences.language.collectAsState(initial = Language.SYSTEM)
     val scope = rememberCoroutineScope()
 
     Column(
@@ -244,13 +258,13 @@ private fun ProfileContent(
         Spacer(modifier = Modifier.height(48.dp))
 
         // Settings sections
-        SettingsSection(title = "Preferences") {
+        SettingsSection(title = stringResource(R.string.preferences)) {
             SettingsItem(
-                label = "Theme",
+                label = stringResource(R.string.theme),
                 value = when (themeMode) {
-                    ThemeMode.SYSTEM -> "System"
-                    ThemeMode.LIGHT -> "Light"
-                    ThemeMode.DARK -> "Dark"
+                    ThemeMode.SYSTEM -> stringResource(R.string.theme_system)
+                    ThemeMode.LIGHT -> stringResource(R.string.theme_light)
+                    ThemeMode.DARK -> stringResource(R.string.theme_dark)
                 },
                 onClick = {
                     val nextMode = when (themeMode) {
@@ -261,19 +275,36 @@ private fun ProfileContent(
                     scope.launch { themePreferences.setThemeMode(nextMode) }
                 }
             )
+            SettingsDivider()
+            SettingsItem(
+                label = stringResource(R.string.language),
+                value = language.displayName,
+                onClick = {
+                    val nextLanguage = when (language) {
+                        Language.SYSTEM -> Language.EN
+                        Language.EN -> Language.FR
+                        Language.FR -> Language.ES
+                        Language.ES -> Language.SYSTEM
+                    }
+                    scope.launch {
+                        languagePreferences.setLanguage(nextLanguage)
+                        onLanguageChanged()
+                    }
+                }
+            )
         }
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        SettingsSection(title = "Account") {
+        SettingsSection(title = stringResource(R.string.account)) {
             SettingsItem(
-                label = "Role",
+                label = stringResource(R.string.role),
                 value = user.role.replaceFirstChar { it.uppercase() }
             )
             SettingsDivider()
             SettingsItem(
-                label = "Email status",
-                value = if (user.verifiedEmail) "Verified" else "Not verified",
+                label = stringResource(R.string.email_status),
+                value = if (user.verifiedEmail) stringResource(R.string.verified) else stringResource(R.string.not_verified),
                 valueColor = if (user.verifiedEmail) OraColors.Success else OraColors.Warning
             )
         }
@@ -282,12 +313,12 @@ private fun ProfileContent(
 
         SettingsSection {
             SettingsItem(
-                label = "Sign out",
+                label = stringResource(R.string.sign_out),
                 onClick = onLogout
             )
             SettingsDivider()
             SettingsItem(
-                label = "Delete account",
+                label = stringResource(R.string.delete_account),
                 labelColor = OraColors.Error,
                 onClick = onDeleteAccount
             )
@@ -332,7 +363,7 @@ private fun Avatar(
             user.profilePictureUrl != null -> {
                 AsyncImage(
                     model = user.profilePictureUrl,
-                    contentDescription = "Profile picture",
+                    contentDescription = stringResource(R.string.profile_picture),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
@@ -345,7 +376,7 @@ private fun Avatar(
                 ) {
                     Icon(
                         imageVector = Icons.Outlined.CameraAlt,
-                        contentDescription = "Change photo",
+                        contentDescription = stringResource(R.string.change_photo),
                         modifier = Modifier.size(24.dp),
                         tint = Color.White
                     )
@@ -376,7 +407,7 @@ private fun Avatar(
                     ) {
                         Icon(
                             imageVector = Icons.Outlined.CameraAlt,
-                            contentDescription = "Add photo",
+                            contentDescription = stringResource(R.string.add_photo),
                             modifier = Modifier.size(14.dp),
                             tint = Color.White
                         )
@@ -485,14 +516,14 @@ private fun DeleteAccountDialog(
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "Delete Account",
+                text = stringResource(R.string.delete_account_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.SemiBold
             )
         },
         text = {
             Text(
-                text = "Are you sure you want to delete your account? This action cannot be undone.",
+                text = stringResource(R.string.delete_account_message),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -500,7 +531,7 @@ private fun DeleteAccountDialog(
         confirmButton = {
             TextButton(onClick = onConfirm) {
                 Text(
-                    text = "Delete",
+                    text = stringResource(R.string.delete),
                     color = OraColors.Error,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -508,7 +539,7 @@ private fun DeleteAccountDialog(
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel))
             }
         },
         containerColor = MaterialTheme.colorScheme.surface,

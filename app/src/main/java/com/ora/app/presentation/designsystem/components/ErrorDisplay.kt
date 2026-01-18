@@ -16,8 +16,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.ora.app.R
 import com.ora.app.presentation.designsystem.theme.Dimensions
 
 @Composable
@@ -52,7 +54,7 @@ fun ErrorDisplay(
         if (onRetry != null) {
             Spacer(modifier = Modifier.height(Dimensions.spacingMd))
             TextButton(onClick = onRetry) {
-                Text("Retry")
+                Text(stringResource(R.string.retry))
             }
         }
     }

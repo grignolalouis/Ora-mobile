@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -73,7 +74,7 @@ fun WelcomeContent(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_ora_logo),
-                    contentDescription = "Ora",
+                    contentDescription = stringResource(R.string.app_name),
                     modifier = Modifier.size(80.dp),
                     colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
                 )
@@ -90,7 +91,7 @@ fun WelcomeContent(
                 )
             ) {
                 Text(
-                    text = agent?.greeting ?: "How can I help you today?",
+                    text = agent?.greeting ?: stringResource(R.string.how_can_i_help),
                     style = MaterialTheme.typography.headlineMedium.copy(
                         fontWeight = FontWeight.Normal,
                         lineHeight = 36.sp
@@ -108,7 +109,7 @@ fun WelcomeContent(
                 enter = fadeIn(tween(300))
             ) {
                 Text(
-                    text = "Ask me anything",
+                    text = stringResource(R.string.ask_anything),
                     style = MaterialTheme.typography.bodyLarge,
                     color = OraTheme.colors.textTertiary,
                     textAlign = TextAlign.Center
