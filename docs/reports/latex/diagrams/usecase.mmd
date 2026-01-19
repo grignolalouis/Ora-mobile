@@ -1,0 +1,49 @@
+flowchart LR
+    subgraph User
+        U((User))
+    end
+
+    subgraph Authentication
+        A1[Register]
+        A2[Log in]
+        A3[Log out]
+    end
+
+    subgraph Agents
+        B1[Browse agents]
+        B2[Select agent]
+    end
+
+    subgraph Chat
+        C1[Send message]
+        C2[View streaming response]
+        C3[View history]
+        C4[Delete conversation]
+    end
+
+    subgraph Profile
+        D1[Edit profile]
+        D2[Upload avatar]
+        D3[Change theme]
+        D4[Change language]
+        D5[Delete account]
+    end
+
+    U --> A1
+    U --> A2
+    U --> A3
+    U --> B1
+    U --> B2
+    U --> C1
+    U --> C2
+    U --> C3
+    U --> C4
+    U --> D1
+    U --> D2
+    U --> D3
+    U --> D4
+    U --> D5
+
+    A2 -.->|requires| B1
+    A2 -.->|requires| C1
+    B2 -.->|precedes| C1

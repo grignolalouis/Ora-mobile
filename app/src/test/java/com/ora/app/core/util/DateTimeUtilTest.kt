@@ -28,7 +28,7 @@ class DateTimeUtilTest {
     }
 
     @Test
-    fun `formatTime returns HH:mm format`() {
+    fun `formatTime returns HH mm format`() {
         val time = "2024-01-15T14:30:00Z"
         val result = DateTimeUtil.formatTime(time)
         assertThat(result).matches("\\d{2}:\\d{2}")

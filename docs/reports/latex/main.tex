@@ -1,0 +1,221 @@
+% ============================================================================
+% ORA - Project Report
+% II.3510 Mobile Development in Android
+% 2025-2026
+% ============================================================================
+
+\documentclass[12pt,a4paper]{report}
+
+% ============================================================================
+% PACKAGES
+% ============================================================================
+
+% Encoding
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+% Page layout
+\usepackage[top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.8em}
+
+% Fonts - Monospace throughout
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage{ragged2e}
+\renewcommand{\familydefault}{\ttdefault}
+
+% Fix overflow
+\sloppy
+\emergencystretch=1em
+\hbadness=10000
+\hfuzz=50pt
+
+% Colors - Kotlin Purple
+\usepackage{xcolor}
+\definecolor{kotlinpurple}{HTML}{7F52FF}
+\definecolor{kotlindark}{HTML}{5C3D99}
+\definecolor{oragray}{HTML}{2D2D2D}
+\definecolor{lightgray}{HTML}{F5F5F5}
+
+% Headers and footers
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\leftmark}
+\fancyhead[R]{\thepage}
+\fancyfoot[C]{\textcolor{kotlinpurple}{Ora - Mobile Development}}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% Custom titles
+\usepackage{titlesec}
+\titleformat{\chapter}[hang]
+  {\normalfont\LARGE\bfseries\color{kotlinpurple}}
+  {\thechapter}{20pt}{}
+\titlespacing*{\chapter}{0pt}{-20pt}{10pt}
+\titleformat{\section}
+  {\normalfont\Large\bfseries\color{kotlindark}}
+  {\thesection}{1em}{}
+\titlespacing*{\section}{0pt}{12pt}{6pt}
+\titleformat{\subsection}
+  {\normalfont\large\bfseries\color{oragray}}
+  {\thesubsection}{1em}{}
+\titlespacing*{\subsection}{0pt}{10pt}{4pt}
+
+% Images and figures
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\graphicspath{{images/}}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{colortbl}
+
+% Source code
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{lightgray},
+  frame=single,
+  rulecolor=\color{kotlinpurple},
+  keywordstyle=\color{kotlinpurple}\bfseries,
+  commentstyle=\color{gray}\itshape,
+  stringstyle=\color{kotlindark},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=2
+}
+
+% Hyperlinks
+\usepackage[hyphens,spaces,obeyspaces]{url}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=kotlinpurple,
+  filecolor=kotlinpurple,
+  urlcolor=kotlinpurple,
+  citecolor=kotlinpurple,
+  pdftitle={Ora - Project Report},
+  pdfauthor={Louis Grignola, Amaury Allemand},
+  breaklinks=true,
+}
+
+% Glossary
+\usepackage[acronym,toc]{glossaries}
+\makeglossaries
+
+% Diagrams
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+% ============================================================================
+% GLOSSARY
+% ============================================================================
+
+\newglossaryentry{api}{
+  name={API},
+  description={Application Programming Interface - Interface allowing applications to communicate with each other}
+}
+
+\newglossaryentry{sse}{
+  name={SSE},
+  description={Server-Sent Events - Technology enabling the server to push data to the client via a persistent HTTP connection}
+}
+
+\newglossaryentry{jwt}{
+  name={JWT},
+  description={JSON Web Token - Standard for creating secure access tokens}
+}
+
+\newglossaryentry{mvi}{
+  name={MVI},
+  description={Model-View-Intent - Architectural pattern for reactive applications}
+}
+
+\newglossaryentry{di}{
+  name={DI},
+  description={Dependency Injection - Technique for decoupling components by injecting their dependencies}
+}
+
+\newglossaryentry{llm}{
+  name={LLM},
+  description={Large Language Model - Large-scale language model used for text generation}
+}
+
+\newglossaryentry{composable}{
+  name={Composable},
+  description={Kotlin function annotated with @Composable to describe UI in Jetpack Compose}
+}
+
+\newglossaryentry{flow}{
+  name={Flow},
+  description={Kotlin type representing an asynchronous data stream}
+}
+
+\newglossaryentry{coroutine}{
+  name={Coroutine},
+  description={Kotlin component for asynchronous programming enabling non-blocking code execution}
+}
+
+\newglossaryentry{streaming}{
+  name={Streaming},
+  description={Continuous data transmission allowing progressive display of responses}
+}
+
+% ============================================================================
+% DOCUMENT
+% ============================================================================
+
+\begin{document}
+
+% ----------------------------------------------------------------------------
+% COVER PAGE
+% ----------------------------------------------------------------------------
+\input{sections/cover}
+
+% ----------------------------------------------------------------------------
+% PRELIMINARY PAGES
+% ----------------------------------------------------------------------------
+\pagenumbering{roman}
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% List of figures
+\listoffigures
+\newpage
+
+% List of tables
+\listoftables
+\newpage
+
+% ----------------------------------------------------------------------------
+% MAIN CONTENT
+% ----------------------------------------------------------------------------
+\pagenumbering{arabic}
+
+% Functional Specifications
+\input{sections/functional}
+
+% Technical Specifications
+\input{sections/technical}
+
+% ----------------------------------------------------------------------------
+% APPENDICES
+% ----------------------------------------------------------------------------
+\appendix
+
+% Glossary
+\printglossaries
+
+\end{document}

@@ -1,0 +1,407 @@
+% ============================================================================
+% PART II: TECHNICAL SPECIFICATIONS
+% ============================================================================
+
+\chapter{Technical Specifications}
+
+\section{Architecture}
+
+\subsection{Clean Architecture}
+
+Ora follows Clean Architecture principles to ensure separation of concerns, testability, and maintainability. The codebase is organized into four distinct layers, each with clear responsibilities and dependencies flowing inward.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=0.3cm,
+        layer/.style={rectangle, draw=kotlinpurple, fill=kotlinpurple!10, minimum width=12cm, minimum height=1.2cm, align=center}
+    ]
+        \node[layer] (pres) {Presentation (Screens, ViewModels, UI Components)};
+        \node[layer, below=of pres] (domain) {Domain (Use Cases, Models, Interfaces)};
+        \node[layer, below=of domain] (data) {Data (Repositories, API Services, Mappers, DTOs)};
+        \node[layer, below=of data] (core) {Core (Utils, Error Handling, DI Modules)};
+    \end{tikzpicture}
+    \caption{Clean Architecture layers in Ora}
+    \label{fig:clean-arch}
+\end{figure}
+
+The \textbf{Core Layer} contains utilities, constants, error handling mechanisms, and dependency injection modules. This layer has no dependencies on other layers and provides foundational components used throughout the application.
+
+The \textbf{Data Layer} implements the repository interfaces defined in the domain layer. It handles all external data operations including API calls, local storage, and data mapping. DTOs are converted to domain models through dedicated mapper classes, ensuring the domain layer remains independent of external data representations.
+
+The \textbf{Domain Layer} represents the business logic of the application. It defines the core models (User, Agent, Session, Message), repository interfaces, and use cases. This layer is completely independent of frameworks and external libraries, making it highly testable and portable.
+
+The \textbf{Presentation Layer} handles all UI-related concerns using Jetpack Compose. ViewModels manage UI state and coordinate with use cases to perform business operations. The layer implements the MVI pattern for predictable state management.
+
+\subsection{MVI Pattern}
+
+The application uses the Model-View-Intent (MVI) pattern for state management in the presentation layer.
+
+\subsubsection{Why MVI over MVVM?}
+
+MVI was chosen over MVVM for several technical reasons specific to Ora's requirements.
+
+The first consideration is \textbf{unidirectional data flow}. In a chat application with real-time streaming, predictable state changes are critical. MVI enforces a single direction: Intent → Model → View, eliminating ambiguity about how and when state changes occur. MVVM's bidirectional binding can lead to unpredictable state updates when handling rapid SSE events.
+
+The second reason is \textbf{state immutability}. MVI uses immutable state objects, making it trivial to compare previous and current states. This is essential for optimizing Compose recomposition during streaming, where content updates multiple times per second.
+
+The third advantage is \textbf{debugging and reproducibility}. Every state transition in MVI is triggered by an explicit Intent. This creates a clear audit trail, making it easier to debug issues in complex flows like tool call sequences or authentication refreshes.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        node distance=2cm,
+        box/.style={rectangle, draw=kotlinpurple, fill=kotlinpurple!10, minimum width=2.5cm, minimum height=1cm, align=center},
+        arrow/.style={->, thick, >=stealth}
+    ]
+        \node[box] (intent) {Intent};
+        \node[box, right=of intent] (model) {Model};
+        \node[box, right=of model] (view) {View};
+
+        \draw[arrow] (intent) -- (model);
+        \draw[arrow] (model) -- (view);
+        \draw[arrow, bend left=40] (view) to node[above] {\small user action} (intent);
+    \end{tikzpicture}
+    \caption{MVI unidirectional data flow}
+    \label{fig:mvi}
+\end{figure}
+
+% ----------------------------------------------------------------------------
+\section{API Interaction}
+
+\subsection{Authentication Endpoints}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|X|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Endpoint} & \textbf{Method} & \textbf{Description} & \textbf{Returns} \\
+        \hline
+        /auth/login & POST & Authenticates user with email/password & User + token \\
+        \hline
+        /auth/register & POST & Creates new user account & User + token \\
+        \hline
+        /auth/logout & POST & Invalidates current session & Status \\
+        \hline
+        /auth/refresh & POST & Refreshes expired access token & New token \\
+        \hline
+        /auth/me & GET & Retrieves current user info & User profile \\
+        \hline
+        /auth/me & DELETE & Deletes user account & Status \\
+        \hline
+        /auth/me/profile-picture & POST & Uploads profile picture & Picture URL \\
+        \hline
+    \end{tabularx}
+    \caption{Authentication API endpoints}
+    \label{tab:auth-api}
+\end{table}
+
+\subsection{Agent Endpoints}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|X|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Endpoint} & \textbf{Method} & \textbf{Description} & \textbf{Returns} \\
+        \hline
+        /agents & GET & Lists all available agents & Agent array \\
+        \hline
+        /agents/\{type\} & GET & Gets specific agent info & Agent details \\
+        \hline
+    \end{tabularx}
+    \caption{Agent API endpoints}
+    \label{tab:agent-api}
+\end{table}
+
+\subsection{Session Endpoints}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|X|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Endpoint} & \textbf{Method} & \textbf{Description} & \textbf{Returns} \\
+        \hline
+        /agents/\{type\}/sessions & GET & Lists user sessions & Session array \\
+        \hline
+        /agents/\{type\}/sessions & POST & Creates new session & Session ID \\
+        \hline
+        /agents/\{type\}/sessions/\{id\} & GET & Gets session + history & Messages \\
+        \hline
+        /agents/\{type\}/sessions/\{id\} & DELETE & Deletes session & Status \\
+        \hline
+        /agents/\{type\}/sessions/\{id\}/message & POST & Sends message & Stream ID \\
+        \hline
+    \end{tabularx}
+    \caption{Session API endpoints}
+    \label{tab:session-api}
+\end{table}
+
+% ----------------------------------------------------------------------------
+\section{SSE Streaming}
+
+\subsection{Overview}
+
+Server-Sent Events (\gls{sse}) is used for real-time streaming of AI responses. Unlike WebSockets, SSE provides a simpler unidirectional protocol perfectly suited for the chat use case where only the server needs to push data to the client.
+
+\subsection{Connection Flow}
+
+The streaming process follows a specific sequence:
+
+\begin{enumerate}
+    \item Client sends message via POST to /agents/\{type\}/sessions/\{id\}/message
+    \item Server returns a stream ID
+    \item Client opens SSE connection to /stream/\{streamId\}
+    \item Server pushes events as AI generates response
+    \item Connection closes on "done" or "close" event
+\end{enumerate}
+
+\subsection{Event Types}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Event} & \textbf{Description} \\
+        \hline
+        delta & Incremental content token (streaming mode enabled) \\
+        \hline
+        message & Complete message in one block (streaming mode disabled) \\
+        \hline
+        reasoning & AI reasoning/thinking content \\
+        \hline
+        tool\_call & Agent initiating tool execution \\
+        \hline
+        tool\_response & Result from tool execution \\
+        \hline
+        thinking\_start & AI begins reasoning phase \\
+        \hline
+        thinking\_end & AI completes reasoning phase \\
+        \hline
+        error & Error during processing \\
+        \hline
+        done & Stream completed successfully \\
+        \hline
+        close & Connection should be closed \\
+        \hline
+        heartbeat & Keep-alive signal \\
+        \hline
+    \end{tabularx}
+    \caption{SSE event types}
+    \label{tab:sse-events}
+\end{table}
+
+\subsection{Implementation}
+
+SSE is implemented using OkHttp's EventSource client rather than Ktor, as Ktor does not natively support SSE. The \texttt{SSEClient} class manages connection lifecycle, event parsing, and error handling. Events are parsed by \texttt{SSEEventMapper} and converted to sealed \texttt{StreamEvent} classes, enabling type-safe handling in the ViewModel.
+
+% ----------------------------------------------------------------------------
+\section{Markdown Rendering}
+
+\subsection{Architecture}
+
+Markdown rendering combines the Markwon library with custom syntax highlighting. Since Jetpack Compose lacks native Markdown support, rendering is performed in an \texttt{AndroidView} wrapper containing a \texttt{TextView}.
+
+\subsection{Components}
+
+\textbf{MarkdownText} is a Composable wrapper that creates and configures the Markwon instance, handles theme changes, and bridges Compose with Android Views.
+
+\textbf{CodeBlock} is a custom component for displaying code blocks with syntax highlighting, language label, and copy-to-clipboard functionality.
+
+\textbf{SyntaxHighlighter} is a custom regex-based highlighter supporting 13 languages. While Prism4j is available in dependencies, a custom implementation was chosen to avoid annotation processing complexity and provide finer control over the Gruvbox color scheme.
+
+\subsection{Supported Languages}
+
+Kotlin, Java, Python, JavaScript, TypeScript, Go, Rust, C, C++, Swift, SQL, JSON, XML/HTML.
+
+% ----------------------------------------------------------------------------
+\section{Libraries}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Library} & \textbf{Version} & \textbf{Purpose} \\
+        \hline
+        Ktor Client & 3.0.2 & HTTP client for REST API (Kotlin-first, coroutines) \\
+        \hline
+        OkHttp SSE & 4.12.0 & SSE client for real-time streaming \\
+        \hline
+        Hilt & 2.58 & Dependency injection (compile-time, ViewModels) \\
+        \hline
+        Kotlinx Serialization & 1.7.3 & JSON serialization (no reflection, type-safe) \\
+        \hline
+        Jetpack Compose & BOM 2025.01.00 & Declarative UI framework \\
+        \hline
+        DataStore & 1.1.1 & Preferences storage (coroutines, type-safe) \\
+        \hline
+        Security Crypto & 1.1.0-alpha06 & Encrypted token storage (Keystore) \\
+        \hline
+        Coil & 3.0.4 & Image loading (Compose-native, Ktor) \\
+        \hline
+        Markwon & 4.6.2 & Markdown rendering (extensible, tables) \\
+        \hline
+        Coroutines & 1.9.0 & Async programming (Flow, structured) \\
+        \hline
+    \end{tabularx}
+    \caption{Main libraries and their purposes}
+    \label{tab:libraries}
+\end{table}
+
+\subsection{Library Selection Criteria}
+
+Each library was selected based on the following criteria:
+
+\textbf{Kotlin-first}: Native Kotlin API without Java wrappers, leveraging language features like coroutines, sealed classes, and extension functions.
+
+\textbf{Coroutine support}: Native integration with suspend functions and Flow for reactive programming.
+
+\textbf{Maintenance}: Active development, regular updates, and strong community support.
+
+\textbf{Performance}: Minimal impact on APK size and runtime performance.
+
+% ----------------------------------------------------------------------------
+\section{Testing}
+
+\subsection{Testing Strategy}
+
+The application follows a comprehensive testing strategy organized in four tiers based on criticality:
+
+\begin{itemize}
+    \item \textbf{Tier 1 - Critical:} Security-sensitive components and complex parsing logic (SSE events, session reconstruction, authentication interceptor)
+    \item \textbf{Tier 2 - High Priority:} Business logic in use cases that orchestrate application behavior
+    \item \textbf{Tier 3 - Medium Priority:} Data layer components including mappers and repository implementations
+    \item \textbf{Tier 4 - Lower Priority:} Presentation layer ViewModels with UI state management
+\end{itemize}
+
+\subsection{Test Libraries}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Library} & \textbf{Version} & \textbf{Purpose} \\
+        \hline
+        JUnit & 4.13.2 & Test framework \\
+        \hline
+        MockK & 1.13.10 & Kotlin mocking library \\
+        \hline
+        Truth & 1.4.2 & Fluent assertions \\
+        \hline
+        Turbine & 1.1.0 & Flow testing utilities \\
+        \hline
+        Coroutines Test & 1.9.0 & Coroutine testing \\
+        \hline
+    \end{tabularx}
+    \caption{Testing libraries}
+    \label{tab:test-libs}
+\end{table}
+
+\subsection{Test Coverage}
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|l|l|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Layer} & \textbf{Components} & \textbf{Test Files} & \textbf{Tests} \\
+        \hline
+        Core & Utils, Error Mapping, Network & 4 & 30 \\
+        \hline
+        Domain & Use Cases, Models & 14 & 72 \\
+        \hline
+        Data & Mappers, Repository & 5 & 69 \\
+        \hline
+        Presentation & ViewModels & 3 & 48 \\
+        \hline
+        \textbf{Total} & - & \textbf{26} & \textbf{219} \\
+        \hline
+    \end{tabularx}
+    \caption{Test coverage by layer}
+    \label{tab:test-coverage}
+\end{table}
+
+\subsection{Test Structure}
+
+Tests are organized mirroring the source code structure, ensuring clear correspondence between implementation and tests:
+
+\begin{itemize}
+    \item \texttt{core/} -- ResultTest, DateTimeUtilTest, ErrorMapperTest, AuthInterceptorTest
+    \item \texttt{data/mapper/} -- SSEEventMapperTest, SessionMapperTest, UserMapperTest, AgentMapperTest
+    \item \texttt{data/repository/} -- AuthRepositoryImplTest
+    \item \texttt{domain/model/} -- SessionInteractionsTest
+    \item \texttt{domain/usecase/auth/} -- Login, Register, GetCurrentUser, Logout, DeleteAccount, UploadProfilePicture
+    \item \texttt{domain/usecase/agent/} -- GetAgentsUseCaseTest
+    \item \texttt{domain/usecase/session/} -- GetSessions, CreateSession, DeleteSession, GetSessionHistory, SendMessage, StreamResponse
+    \item \texttt{presentation/features/} -- AuthViewModelTest, ChatViewModelTest, UserProfileViewModelTest
+\end{itemize}
+
+\subsection{Critical Tests}
+
+\textbf{SSEEventMapperTest} (39 tests) validates parsing of all 13+ SSE event types including delta content accumulation, tool call/response structures, error handling with codes, and graceful degradation for malformed JSON.
+
+\textbf{SessionInteractionsTest} (15 tests) tests the complex algorithm that reconstructs user-assistant interaction pairs from raw message history, including tool call matching, pending status detection, and metadata conversion.
+
+\textbf{AuthInterceptorTest} (12 tests) verifies token injection for authenticated requests, public endpoint bypassing, 401 response handling, and concurrent refresh prevention using atomic flags.
+
+\subsection{Testing Patterns}
+
+\textbf{Use Case Tests:} Each use case is tested with mocked repository dependencies. Tests verify input validation, successful execution paths, error propagation, and correct repository method invocation.
+
+\textbf{ViewModel Tests:} ViewModels are tested using \texttt{UnconfinedTestDispatcher} for synchronous execution. Turbine is used to test Flow emissions (effects) such as navigation events and toasts.
+
+\textbf{Mapper Tests:} Data mappers are tested to ensure correct field mapping between DTOs and domain models, with special attention to nullable fields and nested objects.
+
+% ----------------------------------------------------------------------------
+\section{Future Evolution}
+
+The Ora platform has been designed with extensibility in mind, and several enhancements are planned for future development phases. This section presents the two major features on the roadmap along with additional improvements.
+
+\subsection{Multimodal Support}
+
+The current architecture already supports multimodal interactions at the backend level, with existing endpoints for attachment uploads that are not yet integrated into the mobile application. The next major release will enable users to enrich their conversations with images, documents, and audio content.
+
+Users will be able to attach images directly to their messages, providing visual context that agents can analyze and reference in their responses. Document support will include PDF, Word, and plain text formats, allowing users to share technical documentation or reference materials during conversations. Voice input through audio recording will offer an alternative interaction mode, with server-side transcription converting speech to text before processing.
+
+From a technical perspective, this feature requires implementing an \texttt{AttachmentRepository} to handle file upload and download operations, adding multipart form data support to the Ktor client, and creating new UI components for attachment selection and preview. File compression and validation will ensure optimal performance and security.
+
+\subsection{Knowledge Base Management}
+
+One of the most powerful upcoming features is the exposure of the vector knowledge base to end users. The backend already maintains a dedicated vector database for each agent and user, enabling contextual retrieval during conversations. Future versions will provide a complete interface for users to manage their personal knowledge base.
+
+Users will be able to upload documents that become part of their personal context, viewable and searchable through an in-app browser. When agents reference information from the knowledge base during responses, the interface will display which documents contributed to the answer, providing transparency into the retrieval process. Bulk import and export operations will facilitate migration and backup of knowledge bases.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|l|X|}
+        \hline
+        \rowcolor{lightgray}
+        \textbf{Method} & \textbf{Endpoint} & \textbf{Description} \\
+        \hline
+        GET & /knowledge/documents & List all documents in user's knowledge base \\
+        \hline
+        POST & /knowledge/documents & Upload a new document \\
+        \hline
+        GET & /knowledge/documents/\{id\} & Retrieve document content and metadata \\
+        \hline
+        DELETE & /knowledge/documents/\{id\} & Remove document from knowledge base \\
+        \hline
+        GET & /knowledge/search & Search documents by semantic similarity \\
+        \hline
+    \end{tabularx}
+    \caption{Planned knowledge base API endpoints}
+    \label{tab:kb-endpoints}
+\end{table}
+
+The implementation will leverage the existing server-side embedding pipeline for vector generation. Document chunking strategies will need to balance retrieval precision with context coherence. Preview rendering will require format-specific handlers, such as PDF.js for PDF documents and the existing Markwon renderer for markdown files. Storage quotas and document size limits will be defined to ensure fair resource allocation.
+
+\subsection{Additional Improvements}
+
+Beyond these major features, several quality-of-life improvements are planned. Offline mode will cache recent conversations locally using Room database, allowing users to browse their history without network connectivity. Push notifications will alert users when agents complete long-running tasks or when collaborative sessions receive new messages.
+
+Collaborative sessions will enable users to share conversations with colleagues, facilitating team workflows around AI interactions. Agent customization will allow power users to define custom system prompts and adjust model parameters for specific use cases. Finally, an analytics dashboard will provide insights into usage patterns, helping users understand their interaction history and optimize their workflows.

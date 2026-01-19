@@ -1,0 +1,95 @@
+classDiagram
+    direction LR
+
+    %% Domain Models
+    class User {
+        +id: String
+        +name: String
+        +email: String
+        +profilePictureUrl: String?
+    }
+
+    class Agent {
+        +type: String
+        +name: String
+        +description: String
+        +greeting: String?
+        +capabilities: List~String~
+    }
+
+    class Session {
+        +id: String
+        +userId: String
+        +agentType: String
+        +title: String?
+        +messageCount: Int
+    }
+
+    class Message {
+        +role: String
+        +content: String
+        +timestamp: String
+        +toolCalls: List~ToolCall~?
+    }
+
+    class Interaction {
+        +id: String
+        +userMessage: String
+        +assistantResponse: String
+        +status: InteractionStatus
+        +toolCalls: List~ToolCall~
+    }
+
+    class ToolCall {
+        +id: String
+        +name: String
+        +arguments: Map
+        +status: ToolStatus
+        +result: String?
+    }
+
+    %% Repositories
+    class AuthRepository {
+        <<interface>>
+        +login() Result~User~
+        +register() Result~User~
+        +logout() Result~Unit~
+    }
+
+    class AgentRepository {
+        <<interface>>
+        +getAgents() Result~List~Agent~~
+    }
+
+    class SessionRepository {
+        <<interface>>
+        +getSessions() Result~List~Session~~
+        +streamResponse() Flow~StreamEvent~
+    }
+
+    %% ViewModels
+    class AuthViewModel {
+        +state: StateFlow~AuthState~
+        +dispatch(AuthIntent)
+    }
+
+    class ChatViewModel {
+        +state: StateFlow~ChatState~
+        +dispatch(ChatIntent)
+    }
+
+    class UserProfileViewModel {
+        +state: StateFlow~UserProfileState~
+        +dispatch(UserProfileIntent)
+    }
+
+    %% Relations
+    Session --> User
+    Session --> Agent
+    Session "1" --> "*" Message
+    Interaction --> ToolCall
+
+    AuthViewModel --> AuthRepository
+    ChatViewModel --> AgentRepository
+    ChatViewModel --> SessionRepository
+    UserProfileViewModel --> AuthRepository

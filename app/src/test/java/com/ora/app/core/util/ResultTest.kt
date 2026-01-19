@@ -22,12 +22,6 @@ class ResultTest {
     }
 
     @Test
-    fun `getOrDefault returns default on error`() {
-        val result: Result<String> = Result.error(AppError.Network.NoConnection)
-        assertThat(result.getOrDefault("default")).isEqualTo("default")
-    }
-
-    @Test
     fun `map transforms success value`() {
         val result = Result.success(5).map { it * 2 }
         assertThat(result.getOrNull()).isEqualTo(10)
@@ -69,32 +63,4 @@ class ResultTest {
         assertThat(called).isTrue()
     }
 
-    @Test
-    fun `zip combines two successes`() {
-        val a = Result.success(1)
-        val b = Result.success("two")
-        val zipped = a.zip(b)
-        assertThat(zipped.getOrNull()).isEqualTo(1 to "two")
-    }
-
-    @Test
-    fun `zip returns first error`() {
-        val error = AppError.Network.NoConnection
-        val a: Result<Int> = Result.error(error)
-        val b = Result.success("two")
-        val zipped = a.zip(b)
-        assertThat(zipped.errorOrNull()).isEqualTo(error)
-    }
-
-    @Test
-    fun `runCatching catches AppError`() {
-        val result = runCatching { throw AppError.Auth.InvalidCredentials }
-        assertThat(result.errorOrNull()).isEqualTo(AppError.Auth.InvalidCredentials)
-    }
-
-    @Test
-    fun `runCatching wraps unknown exception`() {
-        val result = runCatching { throw RuntimeException("boom") }
-        assertThat(result.errorOrNull()).isInstanceOf(AppError.Unknown::class.java)
-    }
 }

@@ -1,0 +1,13 @@
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {1.1}{\ignorespaces Ora system global architecture}}{4}{figure.caption.6}%
+\contentsline {figure}{\numberline {1.2}{\ignorespaces Use case diagram showing user interactions with the Ora platform}}{5}{figure.caption.7}%
+\contentsline {figure}{\numberline {1.3}{\ignorespaces Simplified class diagram -- Domain entities}}{6}{figure.caption.8}%
+\contentsline {figure}{\numberline {1.4}{\ignorespaces Authentication screens with real-time field validation}}{7}{figure.caption.9}%
+\contentsline {figure}{\numberline {1.5}{\ignorespaces Main application navigation}}{8}{figure.caption.10}%
+\contentsline {figure}{\numberline {1.6}{\ignorespaces Chat interface with Markdown rendering and syntax highlighting}}{9}{figure.caption.11}%
+\contentsline {figure}{\numberline {1.7}{\ignorespaces Thinking indicator during request processing}}{10}{figure.caption.12}%
+\contentsline {figure}{\numberline {1.8}{\ignorespaces Display of tool calls made by the agent}}{11}{figure.caption.13}%
+\contentsline {figure}{\numberline {1.9}{\ignorespaces Profile page with settings (theme, language, account)}}{12}{figure.caption.14}%
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Clean Architecture layers in Ora}}{15}{figure.caption.16}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces MVI unidirectional data flow}}{16}{figure.caption.18}%

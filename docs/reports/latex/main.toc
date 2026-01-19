@@ -1,0 +1,52 @@
+\contentsline {chapter}{\numberline {1}Functional Specifications}{1}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Project Information}{1}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Project Description}{1}{section.1.2}%
+\contentsline {subsection}{\numberline {1.2.1}Context}{1}{subsection.1.2.1}%
+\contentsline {subsection}{\numberline {1.2.2}Vision}{1}{subsection.1.2.2}%
+\contentsline {subsection}{\numberline {1.2.3}Target Audience}{2}{subsection.1.2.3}%
+\contentsline {subsection}{\numberline {1.2.4}Main Features}{2}{subsection.1.2.4}%
+\contentsline {section}{\numberline {1.3}Global Architecture}{3}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Use Case Diagram}{4}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Class Diagram}{5}{section.1.5}%
+\contentsline {section}{\numberline {1.6}Screenshots}{6}{section.1.6}%
+\contentsline {subsection}{\numberline {1.6.1}Authentication}{7}{subsection.1.6.1}%
+\contentsline {subsection}{\numberline {1.6.2}Home Page and Navigation}{7}{subsection.1.6.2}%
+\contentsline {subsection}{\numberline {1.6.3}Chat Interface}{8}{subsection.1.6.3}%
+\contentsline {subsection}{\numberline {1.6.4}Tool Calls}{10}{subsection.1.6.4}%
+\contentsline {subsection}{\numberline {1.6.5}User Profile}{11}{subsection.1.6.5}%
+\contentsline {section}{\numberline {1.7}Technical Challenges Overcome}{12}{section.1.7}%
+\contentsline {subsection}{\numberline {1.7.1}Real-time SSE Streaming}{12}{subsection.1.7.1}%
+\contentsline {subsection}{\numberline {1.7.2}Custom Markdown Rendering}{13}{subsection.1.7.2}%
+\contentsline {subsection}{\numberline {1.7.3}MVI Architecture with Streaming State}{13}{subsection.1.7.3}%
+\contentsline {chapter}{\numberline {2}Technical Specifications}{15}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Architecture}{15}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Clean Architecture}{15}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}MVI Pattern}{16}{subsection.2.1.2}%
+\contentsline {subsubsection}{Why MVI over MVVM?}{16}{subsubsection*.17}%
+\contentsline {section}{\numberline {2.2}API Interaction}{16}{section.2.2}%
+\contentsline {subsection}{\numberline {2.2.1}Authentication Endpoints}{17}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.2}Agent Endpoints}{17}{subsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.2.3}Session Endpoints}{18}{subsection.2.2.3}%
+\contentsline {section}{\numberline {2.3}SSE Streaming}{18}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}Overview}{18}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Connection Flow}{18}{subsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.3.3}Event Types}{19}{subsection.2.3.3}%
+\contentsline {subsection}{\numberline {2.3.4}Implementation}{19}{subsection.2.3.4}%
+\contentsline {section}{\numberline {2.4}Markdown Rendering}{19}{section.2.4}%
+\contentsline {subsection}{\numberline {2.4.1}Architecture}{19}{subsection.2.4.1}%
+\contentsline {subsection}{\numberline {2.4.2}Components}{19}{subsection.2.4.2}%
+\contentsline {subsection}{\numberline {2.4.3}Supported Languages}{20}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Libraries}{20}{section.2.5}%
+\contentsline {subsection}{\numberline {2.5.1}Library Selection Criteria}{21}{subsection.2.5.1}%
+\contentsline {section}{\numberline {2.6}Testing}{21}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Testing Strategy}{21}{subsection.2.6.1}%
+\contentsline {subsection}{\numberline {2.6.2}Test Libraries}{22}{subsection.2.6.2}%
+\contentsline {subsection}{\numberline {2.6.3}Test Coverage}{22}{subsection.2.6.3}%
+\contentsline {subsection}{\numberline {2.6.4}Test Structure}{22}{subsection.2.6.4}%
+\contentsline {subsection}{\numberline {2.6.5}Critical Tests}{23}{subsection.2.6.5}%
+\contentsline {subsection}{\numberline {2.6.6}Testing Patterns}{23}{subsection.2.6.6}%
+\contentsline {section}{\numberline {2.7}Future Evolution}{23}{section.2.7}%
+\contentsline {subsection}{\numberline {2.7.1}Multimodal Support}{24}{subsection.2.7.1}%
+\contentsline {subsection}{\numberline {2.7.2}Knowledge Base Management}{24}{subsection.2.7.2}%
+\contentsline {subsection}{\numberline {2.7.3}Additional Improvements}{25}{subsection.2.7.3}%
+\contentsline {chapter}{Glossary}{26}{section*.27}%

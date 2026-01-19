@@ -205,61 +205,79 @@ classDiagram
 
 ## 6. Captures d'Écran
 
-> **Note** : Ajouter les captures d'écran de l'application
-
 ### 6.1 Authentification
 
 #### Écran de Connexion
-![Login Screen](./screenshots/login.png)
+![Login](./screenshots/login.png)
 
-**Description** : L'écran de connexion permet à l'utilisateur de s'authentifier avec son email et mot de passe. Un lien vers l'inscription est disponible en bas de l'écran.
+**Description** : Écran de connexion avec champs email et mot de passe. Design épuré avec le logo Ora. Un lien vers l'inscription est disponible pour les nouveaux utilisateurs.
 
 #### Écran d'Inscription
-![Register Screen](./screenshots/register.png)
+![Signup](./screenshots/signup.png)
 
-**Description** : Formulaire d'inscription avec validation en temps réel des champs (email valide, mot de passe sécurisé, confirmation).
-
----
-
-### 6.2 Page d'Accueil - Catalogue d'Agents
-
-![Home Screen](./screenshots/home.png)
-
-**Description** : Liste des agents disponibles sous forme de cartes. Chaque carte affiche le nom, la description et l'avatar de l'agent. Un clic ouvre la conversation avec l'agent sélectionné.
+**Description** : Formulaire d'inscription complet avec validation en temps réel des champs (email valide, mot de passe sécurisé, confirmation du mot de passe).
 
 ---
 
-### 6.3 Chat avec Streaming
+### 6.2 Page d'Accueil
 
-![Chat Screen](./screenshots/chat.png)
+![Home](./screenshots/home.png)
 
-**Description** : Interface de conversation avec un agent. Les messages de l'utilisateur apparaissent à droite (bulles colorées), les réponses de l'agent à gauche. Le streaming SSE permet d'afficher la réponse en temps réel, token par token.
+**Description** : Page d'accueil affichant le catalogue des agents disponibles. Chaque agent est présenté sous forme de carte avec son nom, sa description et son icône. L'utilisateur peut sélectionner un agent pour démarrer une conversation.
+
+---
+
+### 6.3 Navigation - Sidebar
+
+![Sidebar](./screenshots/sidebar.png)
+
+**Description** : Menu latéral (drawer) permettant de naviguer entre les différentes sections de l'application. Affiche l'historique des conversations et permet d'accéder rapidement aux agents précédemment utilisés.
+
+---
+
+### 6.4 Interface de Chat
+
+#### Zone de saisie
+![Input](./screenshots/input.png)
+
+**Description** : Zone de saisie du message avec bouton d'envoi. L'interface est optimisée pour une saisie rapide et intuitive.
+
+#### Conversation avec l'agent
+![Chat](./screenshots/chat.png)
+
+**Description** : Interface de conversation complète. Les messages de l'utilisateur apparaissent à droite, les réponses de l'agent à gauche. Le rendu Markdown est supporté avec coloration syntaxique pour les blocs de code.
 
 #### Indicateur de réflexion
-![Thinking Indicator](./screenshots/thinking.png)
+![Reflexion](./screenshots/reflexion.png)
 
-**Description** : Pendant que l'agent "réfléchit", un indicateur animé informe l'utilisateur que le traitement est en cours.
+**Description** : Pendant le traitement de la requête, un indicateur de "réflexion" animé informe l'utilisateur que l'agent analyse sa demande. Le contenu de la réflexion peut être affiché de manière optionnelle.
 
 ---
 
-### 6.4 Profil Utilisateur
+### 6.5 Appels d'Outils (Tool Calls)
 
-![Profile Screen](./screenshots/profile.png)
+#### Exécution des outils
+![Tools](./screenshots/tools.png)
 
-**Description** : Page de profil permettant de :
-- Modifier les informations personnelles (username, email)
+**Description** : Affichage des appels d'outils effectués par l'agent. L'interface montre les outils invoqués avec leurs paramètres, permettant à l'utilisateur de comprendre les actions entreprises par l'agent.
+
+#### Résultat avec réponse
+![Tools and Answer](./screenshots/tools+answer.png)
+
+**Description** : Affichage combiné des appels d'outils et de la réponse finale de l'agent. Les résultats des outils sont intégrés de manière cohérente dans le flux de conversation.
+
+---
+
+### 6.6 Profil Utilisateur
+
+![User Profile](./screenshots/user.png)
+
+**Description** : Page de profil utilisateur permettant de :
+- Visualiser et modifier les informations personnelles (username, email)
 - Changer la photo de profil
 - Sélectionner le thème (clair/sombre/système)
-- Changer la langue de l'interface
+- Changer la langue de l'interface (FR, EN, ES)
 - Se déconnecter ou supprimer son compte
-
----
-
-### 6.5 Thème Sombre
-
-![Dark Theme](./screenshots/dark_theme.png)
-
-**Description** : L'application supporte un thème sombre complet, appliqué à tous les écrans et composants.
 
 ---
 
@@ -301,9 +319,7 @@ fun onDelta(token: String) {
 |----------------|----------|-------------|
 | Mode hors-ligne | Haute | Cache local avec Room pour consultation sans connexion |
 | Notifications push | Moyenne | Alertes lors de nouvelles réponses d'agents |
-| Partage de conversations | Basse | Export PDF/partage de conversations |
-| Agents personnalisés | Basse | Création d'agents custom par l'utilisateur |
-
+| Partage de conversations | Basse | Export PDF/partage de conversations ou lien auto hgebergé. |
 ---
 
 ## Annexes
