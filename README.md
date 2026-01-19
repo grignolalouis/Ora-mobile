@@ -12,13 +12,7 @@
   <img src="https://img.shields.io/badge/Platform-Android-3DDC84?style=flat&logo=android&logoColor=white" alt="Platform"/>
   <img src="https://img.shields.io/badge/Language-Kotlin-7F52FF?style=flat&logo=kotlin&logoColor=white" alt="Kotlin"/>
   <img src="https://img.shields.io/badge/UI-Jetpack%20Compose-4285F4?style=flat&logo=jetpackcompose&logoColor=white" alt="Compose"/>
-  <img src="https://img.shields.io/badge/Architecture-Clean%20%2B%20MVI-FF6F00?style=flat" alt="Architecture"/>
-  <img src="https://img.shields.io/badge/Tests-219%20passing-brightgreen?style=flat" alt="Tests"/>
-</p>
-
-<p align="center">
   <img src="https://img.shields.io/badge/ISEP-II.3510-blue?style=flat" alt="Module"/>
-  <img src="https://img.shields.io/badge/Year-2025--2026-orange?style=flat" alt="Year"/>
 </p>
 
 ---
@@ -43,34 +37,11 @@ Ora is a native Android application that lets you interact with AI agents throug
 - **Dark Mode** — Easy on the eyes, day or night
 - **Multilingual** — Available in English, French, and Spanish
 
-## Getting Started
-
-1. Clone the repository
-2. Open in Android Studio
-3. Build and run on your device or emulator
-
-> **Note:** Ora requires a backend server to function. See the documentation for setup instructions.
-
 ## Documentation
 
 Full project documentation including functional and technical specifications is available:
 
 📄 **[Project Report (PDF)](docs/reports/pdf/II3510_Ora_Project_Report.pdf)**
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| UI | Jetpack Compose |
-| Architecture | Clean Architecture + MVI |
-| Networking | Ktor + OkHttp SSE |
-| DI | Hilt |
-| Async | Kotlin Coroutines & Flow |
-
-## Authors
-
-- **Louis Grignola**
-- **Amaury Allemand**
 
 ---
 
