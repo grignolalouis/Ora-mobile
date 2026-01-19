@@ -1,5 +1,9 @@
 <p align="center">
-  <img src="docs/reports/latex/images/Ora_logo.png" alt="Ora Logo" width="120"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/Ora_logo_white.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/Ora_logo_black.svg">
+    <img src="assets/Ora_logo_black.svg" alt="Ora Logo" width="120"/>
+  </picture>
 </p>
 
 <h1 align="center">Ora</h1>
