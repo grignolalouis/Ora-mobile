@@ -19,7 +19,6 @@
   <img src="https://img.shields.io/badge/ISEP-II.3510-blue?style=flat" alt="Module"/>
 </p>
 
----
 
 ## About
 
@@ -47,7 +46,6 @@ Full project documentation including functional and technical specifications is 
 
 📄 **[Project Report (PDF)](docs/reports/pdf/II3510_Ora_Project_Report.pdf)**
 
----
 
 <p align="center">
   <sub>ISEP · II.3510 Mobile Development in Android · 2025-2026</sub>
